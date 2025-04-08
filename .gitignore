@@ -1,0 +1,66 @@
+# Node modules (frontend + backend)
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.*.local
+
+# Build output (Next.js, Express, TypeScript)
+.next/
+out/
+dist/
+build/
+*.tsbuildinfo
+
+# Runtime files
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor configs
+.vscode/
+.idea/
+*.swp
+
+# Coverage reports
+coverage/
+
+# Docker
+.docker/
+docker-compose.override.yml
+docker-compose.dev.yml
+docker-compose.test.yml
+*.local.yml
+Dockerfile.dev
+.dockerignore
+
+# PM2 logs (if using PM2 for process management)
+.pm2/
+
+# ESLint / Prettier caches
+.eslintcache
+.prettiercache
+
+# Uploads / Local databases (if any)
+uploads/
+*.sqlite
+*.sqlite3
+*.db
+
+# TypeScript declaration outputs (if you generate types)
+*.d.ts
+
+# Optional: Turbo/Next cache (monorepo or advanced builds)
+.turbo/
