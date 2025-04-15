@@ -64,3 +64,10 @@ uploads/
 
 # Optional: Turbo/Next cache (monorepo or advanced builds)
 .turbo/
+
+
+# Ignore SQLite dev DB
+mockdb.sqlite
+*.sqlite
+*.sqlite3
+backend/mockdb.sqlite

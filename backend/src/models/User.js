@@ -14,13 +14,13 @@ const User = (sequelize, DataTypes) => {
                 notEmpty: true,
             },
         },
-        // hashedPassword: {
-        //     type: DataTypes.STRING,
-        //     allowNull: false,
-        //     validate: {
-        //         notEmpty: true,
-        //     },
-        // },
+        hashedPassword: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notEmpty: true,
+            },
+        },
     });
 };
 
