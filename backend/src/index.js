@@ -10,6 +10,7 @@ import userRouter from './routes/user.mjs'
 import authRouter from './routes/auth.mjs'
 import recipeRouter from './routes/recipe.mjs'
 import healthRouter from './routes/healthCheck.mjs'
+import commentRouter from './routes/comment.mjs'
 
 
 const app = express();
@@ -45,6 +46,7 @@ app.use(userRouter)
 app.use(authRouter)
 app.use(healthRouter)
 app.use(recipeRouter)
+app.use(commentRouter)
 
 
 app.listen(PORT, ()=>{
