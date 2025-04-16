@@ -1,23 +1,16 @@
-import { where } from 'sequelize';
 import db from '../db/db.js';
 import { hashPassword } from '../utils/authHelper.mjs';
 
 export const createUserController = async (req, res) => {
   try {
+  
     const { name, email ,password } = req.body;
-    let role;
     const hashedPassword = hashPassword(password)
+    const  user = await db.User.create({ name, email, hashedPassword});
 
-    let user;
-    if (req.body.role){ 
-      role =req.body.role
-      user = await db.User.create({ name, email, hashedPassword, role});
-    } else{
-      user = await db.User.create({ name, email, hashedPassword});
-    }
-    
     console.log('User created:', user);
     res.status(201).json(user);
+  
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to create user' });
@@ -36,5 +29,3 @@ export const getUserFromID = async (req, res) => {
     res.status(500).json({error: 'Cannot find user'})
   }
 }
-
-// export default {createUserController, getUserFromID};
