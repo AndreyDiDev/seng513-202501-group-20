@@ -59,18 +59,47 @@ export const removeRecipeController = async (req, res) => {
 }
 
 // Get all recipes that only have the chosen ingredients (but not necessarily all of the chosen ingredients) and no others
-// export const getRecipesByIngredients = async (req, res) => {
-//     const t = await db.sequelize.transaction(); // Begin transaction
+export const getRecipesByIngredients = async (req, res) => {
+    const t = await db.sequelize.transaction();
 
-//     try {
-//         const { ingredients } = req.query;
-        
-//     catch {
+    try {
+        const { ingredients } = req.body;
 
-//     }
+        // Get ingredient records from names
+        const ingredientRecords = await db.Ingredient.findAll({
+            where: {
+                name: {
+                    [Op.in]: ingredients
+                }
+            },
+            transaction: t
+        });
 
-//     }
-    
+        const desiredIngredientIds = ingredientRecords.map(i => i.id);
 
-// }
-  
+        const recipes = await db.Recipe.findAll({
+            attributes: ['id', 'title'],
+            include: {
+                model: db.Ingredient,
+                attributes: [],
+                through: { attributes: [] }, // Don't need join table attributes
+                required: true
+            },
+            group: ['Recipe.id'],
+            having: literal(`
+                COUNT("Ingredients"."id") = SUM(CASE 
+                    WHEN "Ingredients"."id" IN (${desiredIngredientIds.join(',')}) THEN 1 
+                    ELSE 0 
+                END)
+            `),
+            transaction: t
+        });
+
+        await t.commit();
+        res.status(200).json(recipes);
+    } catch (err) {
+        await t.rollback();
+        console.error(err);
+        res.status(500).json({ error: 'Failed to get recipes' });
+    }
+};
