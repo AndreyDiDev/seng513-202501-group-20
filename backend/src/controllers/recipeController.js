@@ -77,7 +77,6 @@ export const getRecipesByIngredients = async (req, res) => {
         const desiredIngredientIds = ingredientRecords.map(i => i.id);
 
         const recipes = await db.Recipe.findAll({
-            attributes: ['id', 'title'],
             include: {
                 model: db.Ingredient,
                 attributes: [],
