@@ -6,7 +6,7 @@ export const createRecipeController = async (req, res) => {
     const t = await db.sequelize.transaction(); // Begin transaction
     try {
         const { title, time, calories, instructions, createdBy, ingredients } = req.body;
-        const recipe = await db.Recipe.create({ title, time, calories, instructions, createdBy }, { transaction: t });
+        const recipe = await db.Recipe.create({ title, time, calories, instructions, createdBy}, { transaction: t });
 
         // Process ingredients safely
         const ingredientRecords = [];
@@ -29,4 +29,27 @@ export const createRecipeController = async (req, res) => {
         res.status(500).json({ error: 'Failed to create recipe' });
     }
 };
+
+export const removeRecipeController = async (req, res) => {
+    const t = await db.sequelize.transaction(); // Begin transaction
+    try {
+        const { id } = req.params;
+        const recipe = await db.Recipe.findByPk(id, { transaction: t });
+
+        if (!recipe) {
+            console.log('Recipe not found:', id);
+            return res.status(404).json({ error: 'Recipe not found' });
+        }
+
+        await recipe.destroy({ transaction: t });
+        await t.commit(); // Commit transaction
+
+        console.log('Recipe deleted:', recipe);
+        res.status(200).json({ message: 'Recipe deleted successfully' });
+    } catch (err) {
+        await t.rollback(); // Roll back if something fails
+        console.error(err);
+        res.status(500).json({ error: 'Failed to delete recipe' });
+    }
+}
   
