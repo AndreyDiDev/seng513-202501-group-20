@@ -7,6 +7,6 @@ import {getRecipesByIngredients} from '../controllers/recipeController.js';
 
 router.post('/api/recipe', isAuthenticated, createRecipeController);
 router.delete('/api/recipe/:id', isAuthenticated, removeRecipeController);
-router.get('/api/recipe', getRecipesByIngredients);
+router.get('/api/recipe', isAuthenticated, getRecipesByIngredients);
 
 export default router

@@ -1,9 +1,8 @@
-import { where } from 'sequelize';
 import db from '../db/db.js';
-import { hashPassword } from '../utils/authHelper.mjs';
+
 
 // Import helper functions
-const {Op, fn, col, literal} = db.Sequelize;
+const {Op, literal} = db.Sequelize;
 
 // Create a new recipe
 export const createRecipeController = async (req, res) => {
