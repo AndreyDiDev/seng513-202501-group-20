@@ -5,7 +5,7 @@ import authRouter from './routes/auth.mjs'
 import passport from 'passport'
 import session from 'express-session'
 import './strategies/local-strategy.mjs'
-
+import {isAuthenticated} from "./utils/isAuthenticated.mjs";
 
 const app = express();
 app.use(express.json());
@@ -17,7 +17,7 @@ app.use(cors({
 
 app.use(
     session({
-        secret: "anson the dev",
+        secret: "zaid the dev",
         saveUninitialized: true,
         resave: false,
         cookie: {
@@ -29,7 +29,7 @@ app.use(
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.get( '/api/backendEngineers', (req, res) =>{
+app.get( '/api/backendEngineers', isAuthenticated ,(req, res) =>{
     const users = [{id: 1, name: 'Zaid'}, {id:2 , name:'Juan'}]
     return res.status(200).json({users})
 })

@@ -1,27 +1,29 @@
-const User = (sequelize, DataTypes) => {
-    return sequelize.define("User", {
-        name: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                notEmpty: true,
-            },
-        },
-        email: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                notEmpty: true,
-            },
-        },
-        hashedPassword: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                notEmpty: true,
-            },
-        },
+export default (sequelize, DataTypes) => {
+    const User = sequelize.define("User", {
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      hashedPassword: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      role: {
+        type: DataTypes.STRING,
+        defaultValue: 'normal',
+      },
     });
-};
-
-export default User;
+  
+    User.associate = models => {
+      User.hasMany(models.Recipe, { foreignKey: 'createdBy' });
+      User.hasMany(models.Comment, { foreignKey: 'userId' });
+    };
+  
+    return User;
+  };
+  

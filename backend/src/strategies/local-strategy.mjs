@@ -11,7 +11,7 @@ passport.deserializeUser( async (id,done)=>{
     try {
         const findUser = await db.User.findByPk(id)
         if (!findUser) throw new Error('User not found')
-        done(null, user)
+        done(null, findUser)
     } catch (err) {
         done(err, null)
     }
