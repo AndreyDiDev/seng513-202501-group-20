@@ -80,7 +80,6 @@ export default function SignupPage() {
           email: formData.email,
           password: formData.password,
         }
-
         
         // Send the data to the API
         const response = await fetch("http://localhost:5003/api/user", {
@@ -309,7 +308,7 @@ export default function SignupPage() {
 
             <div className="mt-6 text-center text-xs sm:text-sm">
               <span className="text-gray-400">Already have an account?</span>{" "}
-              <Link href="/login/page" className="font-medium text-emerald-400 hover:text-emerald-300">
+              <Link href="/login" className="font-medium text-emerald-400 hover:text-emerald-300">
                 Sign in
               </Link>
             </div>

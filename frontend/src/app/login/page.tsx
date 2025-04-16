@@ -9,15 +9,39 @@ export default function LoginPage() {
   const router = useRouter()
   const [email, setEmail] = React.useState("")
   const [password, setPassword] = React.useState("")
+  const [error, setError] = React.useState("")
 
-  // TODO: 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Add your authentication logic here
-    console.log("Login attempt with:", { email, password })
-    // On successful login:
-    router.push("/dashboard/page")
-  }
+    setError("")
+  
+    try {
+      const response = await fetch("http://localhost:5003/api/auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      })
+  
+      if (response.status === 200) {
+        
+        // Save data to localStorage
+        router.push(
+          `/dashboard?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+        )
+      } else {
+        const errorData = await response.json()
+        setError(errorData.message || "Login failed. Please check your credentials.")
+      }
+    } catch (err) {
+      console.error("Login error:", err)
+      setError("Something went wrong. Please try again.")
+    }
+  }  
 
   return (
     <>
@@ -137,7 +161,7 @@ export default function LoginPage() {
 
             <div className="mt-6 text-center text-xs sm:text-sm">
               <span className="text-gray-400">Don&apos;t have an account?</span>{" "}
-              <Link href="/signup/page" className="font-medium text-emerald-400 hover:text-emerald-300">
+              <Link href="/signup/" className="font-medium text-emerald-400 hover:text-emerald-300">
                 Create account
               </Link>
             </div>
