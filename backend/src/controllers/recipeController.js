@@ -2,6 +2,10 @@ import { where } from 'sequelize';
 import db from '../db/db.js';
 import { hashPassword } from '../utils/authHelper.mjs';
 
+// Import helper functions
+const {Op, fn, col, literal} = db.Sequelize;
+
+// Create a new recipe
 export const createRecipeController = async (req, res) => {
     const t = await db.sequelize.transaction(); // Begin transaction
     try {
@@ -30,6 +34,7 @@ export const createRecipeController = async (req, res) => {
     }
 };
 
+// Remove a recipe
 export const removeRecipeController = async (req, res) => {
     const t = await db.sequelize.transaction(); // Begin transaction
     try {
@@ -52,4 +57,20 @@ export const removeRecipeController = async (req, res) => {
         res.status(500).json({ error: 'Failed to delete recipe' });
     }
 }
+
+// Get all recipes that only have the chosen ingredients (but not necessarily all of the chosen ingredients) and no others
+// export const getRecipesByIngredients = async (req, res) => {
+//     const t = await db.sequelize.transaction(); // Begin transaction
+
+//     try {
+//         const { ingredients } = req.query;
+        
+//     catch {
+
+//     }
+
+//     }
+    
+
+// }
   
