@@ -1,11 +1,15 @@
 import express from "express";
 import cors from "cors";
-import userRouter from './routes/user.mjs'
-import authRouter from './routes/auth.mjs'
 import passport from 'passport'
 import session from 'express-session'
 import './strategies/local-strategy.mjs'
 import {isAuthenticated} from "./utils/isAuthenticated.mjs";
+
+// Routers
+import userRouter from './routes/user.mjs'
+import authRouter from './routes/auth.mjs'
+import recipeRouter from './routes/recipe.mjs'
+
 
 const app = express();
 app.use(express.json());
@@ -38,6 +42,7 @@ app.get( '/api/backendEngineers', isAuthenticated ,(req, res) =>{
 
 app.use(userRouter)
 app.use(authRouter)
+app.use(recipeRouter)
 
 
 app.listen(PORT, ()=>{
