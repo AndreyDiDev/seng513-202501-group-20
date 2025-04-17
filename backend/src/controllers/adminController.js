@@ -13,7 +13,6 @@ export const createAdminController = async (req, res) => {
 
     const user = await db.User.create({ name, email, hashedPassword, role});
     
-    console.log('Admin created:', user);
     res.status(201).json(user);
   } catch (err) {
     console.error(err);
@@ -114,12 +113,3 @@ export const adminMakeUserNormalController = async (req, res) => {
         res.status(500).json({ error: 'Failed to update user role' });
     }
 };
-
-
-// export const addComment = async (req,res)=>{
-//     try {
-//         const {comment} = req.body
-//     } catch (err) {
-        
-//     }
-// }

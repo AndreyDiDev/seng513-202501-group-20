@@ -20,13 +20,11 @@ passport.deserializeUser( async (id,done)=>{
 export default passport.use(
     new Strategy( {usernameField: 'email'},async (email, password, done)=>{
         try {
-            console.log(email, password)
             const findUser = await db.User.findOne({
                 where:{
                     email: email
                 }
             })
-            console.log('here left')
             if (!findUser) throw new Error('User not found')
             if (!comparePassword(password,findUser.hashedPassword )) throw new Error("Bad Credentials"); 
             done(null, findUser)

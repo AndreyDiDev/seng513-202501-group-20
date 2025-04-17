@@ -8,7 +8,6 @@ export const createUserController = async (req, res) => {
     const hashedPassword = hashPassword(password)
     const  user = await db.User.create({ name, email, hashedPassword});
 
-    console.log('User created:', user);
     res.status(201).json(user);
   
   } catch (err) {

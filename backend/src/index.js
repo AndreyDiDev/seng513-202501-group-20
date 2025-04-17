@@ -3,7 +3,6 @@ import cors from "cors";
 import passport from 'passport'
 import session from 'express-session'
 import './strategies/local-strategy.mjs'
-import {isAuthenticated} from "./utils/isAuthenticated.mjs";
 
 // Routers
 import userRouter from './routes/user.mjs'
@@ -32,16 +31,11 @@ app.use(
     })
 );
 
+// Registering passport for auth and using express-session to track user
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.get( '/api/backendEngineers', isAuthenticated ,(req, res) =>{
-    const users = [{id: 1, name: 'Zaid'}, {id:2 , name:'Juan'}]
-    return res.status(200).json({users})
-})
-
-
-
+// Registering routes
 app.use(userRouter)
 app.use(authRouter)
 app.use(healthRouter)
