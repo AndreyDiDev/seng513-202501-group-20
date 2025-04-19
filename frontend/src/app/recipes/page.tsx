@@ -1,11 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Head from "next/head"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-
-// Removed Lucide React imports
 
 // Mock user data
 const mockUser = {
@@ -132,64 +130,7 @@ export default function RecipesPage() {
   const [sortBy, setSortBy] = useState("rating") // rating, time, newest
   const [recipes, setRecipes] = useState(mockRecipes)
   const [showFilters, setShowFilters] = useState(false)
-
-  useEffect(() => { 
-
-    const postRecipes = async () => {
-  
-      // separately post each recipe
-      for (const recipe of recipes) {
-        try {
-          const response = await fetch("http://localhost:5003/api/recipe", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name: recipe.name,
-              description: recipe.description,
-              ingredients: recipe.ingredients,
-              instructions: recipe.instructions,
-              prepTime: recipe.prepTime,
-              calories: recipe.calories,
-              image: recipe.image,
-            }),
-          })
-  
-        } catch (error) {
-          console.error("Error posting recipe:", error)
-        }
-      }
-    }
-    
-    postRecipes()
-    
-    const handleRetrieveRecipes = async () => {
-
-      const ingredients = recipes.map((recipe) => recipe.ingredients).flat()
-      console.log("Ingredients:", ingredients)
-
-      try {
-        const ingredients = ["tomato", "onion", "garlic"];
-      
-        const response = await fetch("http://localhost:5003/api/recipe", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ ingredients: ingredients }),
-        });
-      
-        const data = await response.json();
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching recipes:", error);
-      }    
-    }
-
-    handleRetrieveRecipes()
-  }, [])
-
+  const [selectedRecipe, setSelectedRecipe] = useState(null)
 
   // Filter and sort recipes
   const filteredRecipes = recipes
@@ -231,7 +172,8 @@ export default function RecipesPage() {
 
   // Logout function
   const handleLogout = () => {
-    router.push("/login")
+    // In a real app, you would handle logout logic here
+    router.push("/login/page")
   }
 
   return (
@@ -416,18 +358,17 @@ export default function RecipesPage() {
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
                       className="mr-3 h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
                     >
-                      <path d="M12 5v14"></path>
-                      <path d="M5 12h14"></path>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                      />
                     </svg>
                     Submit Recipe
                   </Link>
@@ -667,20 +608,45 @@ export default function RecipesPage() {
               </div>
             )}
 
-            {/* Recipe grid */}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {filteredRecipes.map((recipe) => (
-                <div key={recipe.id} className="overflow-hidden rounded-lg bg-gray-800 shadow-lg">
-                  <div className="relative">
-                    <img
-                      src={recipe.image || "/placeholder.svg"}
-                      alt={recipe.name}
-                      className="h-48 w-full object-cover"
-                    />
-                    <button
-                      onClick={() => toggleFavorite(recipe.id)}
-                      className="absolute right-2 top-2 rounded-full bg-gray-900 bg-opacity-50 p-1.5 text-white hover:bg-opacity-70"
+            {/* Selected Recipe Panel */}
+            {selectedRecipe && (
+              <div className="mb-6 rounded-lg bg-gray-800 p-6 shadow-lg">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-semibold text-gray-100">{selectedRecipe.title}</h2>
+                  <button
+                    onClick={() => setSelectedRecipe(null)}
+                    className="rounded-full bg-gray-700 p-1 text-gray-300 hover:bg-gray-600"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
                     >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h3 className="text-md font-medium text-gray-200 mb-2">Ingredients</h3>
+                    <ul className="space-y-1 text-gray-300">
+                      {selectedRecipe.ingredients.map((ingredient, index) => (
+                        <li key={index} className="flex items-center">
+                          <span className="mr-2">•</span>
+                          {ingredient}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h3 className="text-md font-medium text-gray-200 mb-2">Instructions</h3>
+                    <p className="text-gray-300 whitespace-pre-line">{selectedRecipe.instructions}</p>
+
+                    <div className="mt-4 flex items-center text-sm text-gray-400">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -691,14 +657,21 @@ export default function RecipesPage() {
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className={`h-5 w-5 ${recipe.isFavorite ? "fill-red-500 text-red-500" : ""}`}
+                        className="mr-1 h-4 w-4"
                       >
-                        <path d="M19.4 7.34A6 6 0 0 0 5.37 7.34"></path>
-                        <path d="M12 21a9 9 0 0 0 6.21-15.81A9 9 0 0 0 5.79 5.19A9 9 0 0 0 12 21z"></path>
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
                       </svg>
-                    </button>
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-gray-900 to-transparent p-4">
-                      <div className="flex items-center">
+                      <span>{selectedRecipe.prepTime}</span>
+                      <span className="mx-2">•</span>
+                      <span>{selectedRecipe.calories} cal</span>
+                    </div>
+
+                    <div className="mt-4">
+                      <button
+                        onClick={() => toggleFavorite(selectedRecipe.id)}
+                        className="flex items-center rounded-md bg-gray-700 px-3 py-1.5 text-sm font-medium text-gray-300 hover:bg-gray-600 mr-2"
+                      >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
@@ -709,17 +682,72 @@ export default function RecipesPage() {
                           strokeWidth="2"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          className="h-4 w-4 text-yellow-400"
+                          className={`h-4 w-4 mr-1 ${selectedRecipe.isFavorite ? "fill-red-500 text-red-500" : ""}`}
                         >
-                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                          <path d="M19.4 7.34A6 6 0 0 0 5.37 7.34"></path>
+                          <path d="M12 21a9 9 0 0 0 6.21-15.81A9 9 0 0 0 5.79 5.19A9 9 0 0 0 12 21z"></path>
                         </svg>
-                        <span className="ml-1 text-sm font-medium text-white">{recipe.rating}</span>
-                      </div>
+                        {selectedRecipe.isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+                      </button>
+
+                      <button className="flex items-center rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-500">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="h-4 w-4 mr-1"
+                        >
+                          <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                        </svg>
+                        Add to Meal Plan
+                      </button>
                     </div>
                   </div>
-                  <div className="p-4">
-                    <h3 className="text-lg font-medium text-gray-100">{recipe.name}</h3>
-                    <p className="mt-1 text-sm text-gray-400">by {recipe.author}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Recipe List */}
+            <div className="h-[calc(100vh-16rem)] overflow-y-auto pr-2">
+              <div className="space-y-4">
+                {filteredRecipes.map((recipe) => (
+                  <div
+                    key={recipe.id}
+                    className="rounded-lg bg-gray-800 p-4 shadow-lg cursor-pointer hover:bg-gray-750"
+                    onClick={() => setSelectedRecipe(recipe)}
+                  >
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-lg font-medium text-gray-100">{recipe.name}</h3>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          toggleFavorite(recipe.id)
+                        }}
+                        className="rounded-full p-1 text-gray-300 hover:bg-gray-700"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className={`h-5 w-5 ${recipe.isFavorite ? "fill-red-500 text-red-500" : ""}`}
+                        >
+                          <path d="M19.4 7.34A6 6 0 0 0 5.37 7.34"></path>
+                          <path d="M12 21a9 9 0 0 0 6.21-15.81A9 9 0 0 0 5.79 5.19A9 9 0 0 0 12 21z"></path>
+                        </svg>
+                      </button>
+                    </div>
                     <div className="mt-2 flex items-center text-sm text-gray-400">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -740,59 +768,61 @@ export default function RecipesPage() {
                       <span className="mx-2">•</span>
                       <span>{recipe.calories} cal</span>
                     </div>
-                    <div className="mt-3 flex flex-wrap gap-1">
-                      {recipe.tags.map((tag) => (
-                        <span key={tag} className="rounded-full bg-gray-700 px-2 py-0.5 text-xs text-gray-300">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                    <p className="mt-3 text-sm text-gray-300 line-clamp-2">{recipe.description}</p>
-                    <div className="mt-4">
-                      <Link
-                        href={`/recipes/${recipe.id}`}
-                        className="inline-flex items-center rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-500"
-                      >
-                        View Recipe
-                      </Link>
-                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+
+                {filteredRecipes.length === 0 && (
+                  <div className="flex flex-col items-center justify-center rounded-lg bg-gray-800 p-12 text-center shadow-lg">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-12 w-12 text-gray-500"
+                    >
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    <h3 className="mt-4 text-lg font-medium text-gray-100">No recipes found</h3>
+                    <p className="mt-2 text-sm text-gray-400">
+                      Try adjusting your search or filters to find what you're looking for.
+                    </p>
+                    <button
+                      onClick={() => {
+                        setSearchTerm("")
+                        setActiveTag("all")
+                      }}
+                      className="mt-6 rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500"
+                    >
+                      Clear Filters
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
 
-            {filteredRecipes.length === 0 && (
-              <div className="flex flex-col items-center justify-center rounded-lg bg-gray-800 p-12 text-center shadow-lg">
+            {/* Create Recipe Button */}
+            <div className="fixed bottom-6 right-6">
+              <Link
+                href="/submit"
+                className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg hover:bg-emerald-500"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
+                  className="h-6 w-6"
                   fill="none"
+                  viewBox="0 0 24 24"
                   stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-12 w-12 text-gray-500"
                 >
-                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
-                <h3 className="mt-4 text-lg font-medium text-gray-100">No recipes found</h3>
-                <p className="mt-2 text-sm text-gray-400">
-                  Try adjusting your search or filters to find what you're looking for.
-                </p>
-                <button
-                  onClick={() => {
-                    setSearchTerm("")
-                    setActiveTag("all")
-                  }}
-                  className="mt-6 rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500"
-                >
-                  Clear Filters
-                </button>
-              </div>
-            )}
+              </Link>
+            </div>
           </main>
         </div>
       </div>
