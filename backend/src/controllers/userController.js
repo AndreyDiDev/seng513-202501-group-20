@@ -29,6 +29,18 @@ export const getUserFromID = async (req, res) => {
   }
 }
 
+export const getUserFromEmail = async (req, res) => {
+  try {
+    const {email} = req.body;
+    const user = await db.User.findOne({where: {email}})
+    if (!user) throw new Error('User not found')
+    res.status(200).json({'userId': user.id,'name': user.name, 'email': user.email})
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({error: 'Cannot find user'})
+  }
+}
+
 export const buyPremiumController = async (req, res) => {
   try {
     const { userId } = req.body;
