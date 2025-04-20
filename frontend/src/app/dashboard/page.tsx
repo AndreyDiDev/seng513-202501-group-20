@@ -6,9 +6,8 @@ import { useRouter } from "next/navigation"
 
 // Mock user data
 const mockUser = {
-  name: "Alex Johnson",
-  email: "alex@example.com",
-  avatar: "https://i.pravatar.cc/150?u=alex",
+  name: "Juanito Escobar",
+  email: "escobar@example.com",
   isPremium: false,
 }
 
@@ -222,11 +221,6 @@ export default function Dashboard() {
             {/* User profile */}
             <div className="border-b border-gray-700 px-6 py-4">
               <div className="flex items-center">
-                <img
-                  src={mockUser.avatar || "/placeholder.svg"}
-                  alt="User avatar"
-                  className="h-10 w-10 rounded-full object-cover"
-                />
                 <div className="ml-3">
                   <p className="text-sm font-medium text-gray-100">{mockUser.name}</p>
                   <p className="text-xs text-gray-400">{mockUser.email}</p>

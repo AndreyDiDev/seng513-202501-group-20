@@ -13,11 +13,9 @@ export default function AccountPage() {
 
   // Mock user data
   const [userData, setUserData] = useState({
-    name: "Alex Johnson",
-    email: "alex@example.com",
-    avatar: "https://i.pravatar.cc/150?u=alex",
+    name: "Juanito Escobar",
+    email: "escobar@example.com",
     isPremium: false,
-    joinDate: "January 15, 2023",
     notifications: {
       email: true,
       push: false,
@@ -148,11 +146,6 @@ export default function AccountPage() {
           <div className="md:col-span-1">
             <div className="rounded-lg bg-gray-800 p-6 shadow">
               <div className="mb-6 flex flex-col items-center">
-                <img
-                  src={userData.avatar || "/placeholder.svg"}
-                  alt="Profile"
-                  className="mb-4 h-24 w-24 rounded-full border-4 border-emerald-600 object-cover"
-                />
                 <h2 className="text-xl font-bold">{userData.name}</h2>
                 <p className="text-sm text-gray-400">{userData.email}</p>
                 <div className="mt-2">
@@ -180,7 +173,6 @@ export default function AccountPage() {
                     </span>
                   )}
                 </div>
-                <p className="mt-2 text-xs text-gray-400">Member since {userData.joinDate}</p>
               </div>
 
               <nav className="space-y-1">
@@ -341,24 +333,6 @@ export default function AccountPage() {
                         id="email"
                         value={userData.email}
                         onChange={(e) => setUserData({ ...userData, email: e.target.value })}
-                        className="w-full rounded-md border border-gray-700 bg-gray-700 px-4 py-2 text-gray-100 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                      />
-                    </div>
-                  </div>
-                  <div className="mb-6">
-                    <label htmlFor="avatar" className="mb-2 block text-sm font-medium">
-                      Profile Picture
-                    </label>
-                    <div className="flex items-center">
-                      <img
-                        src={userData.avatar || "/placeholder.svg"}
-                        alt="Current avatar"
-                        className="mr-4 h-16 w-16 rounded-full object-cover"
-                      />
-                      <input
-                        type="file"
-                        id="avatar"
-                        accept="image/*"
                         className="w-full rounded-md border border-gray-700 bg-gray-700 px-4 py-2 text-gray-100 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                       />
                     </div>
