@@ -31,7 +31,7 @@ export const getUserFromID = async (req, res) => {
 
 export const getUserFromEmail = async (req, res) => {
   try {
-    const {email} = req.body;
+    const {email} = req.query;
     const user = await db.User.findOne({where: {email}})
     if (!user) throw new Error('User not found')
     res.status(200).json({'userId': user.id,'name': user.name, 'email': user.email})
