@@ -4,12 +4,12 @@ import { useState } from "react"
 import Head from "next/head"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
 // Mock user data
 const mockUser = {
-  name: "Alex Johnson",
-  email: "alex@example.com",
-  avatar: "https://i.pravatar.cc/150?u=alex",
+  name: "Juanito Escobar",
+  email: "escobar@example.com",
   isPremium: false,
 }
 
@@ -128,9 +128,27 @@ export default function RecipesPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [activeTag, setActiveTag] = useState("all")
   const [sortBy, setSortBy] = useState("rating") // rating, time, newest
-  const [recipes, setRecipes] = useState(mockRecipes)
+  const [recipes, setRecipes] = useState([])
   const [showFilters, setShowFilters] = useState(false)
   const [selectedRecipe, setSelectedRecipe] = useState(null)
+
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const res = await fetch("http://localhost:5003/api/recipes/all")
+        if (!res.ok) {
+          throw new Error("Failed to fetch recipes")
+        }
+        const data = await res.json()
+        setRecipes(data)
+      } catch (err) {
+        console.error("Error loading recipes:", err)
+      }
+    }
+
+    fetchRecipes()
+  }, [])
+
 
   // Filter and sort recipes
   const filteredRecipes = recipes
@@ -252,11 +270,6 @@ export default function RecipesPage() {
             {/* User profile */}
             <div className="border-b border-gray-700 px-6 py-4">
               <div className="flex items-center">
-                <img
-                  src={mockUser.avatar || "/placeholder.svg"}
-                  alt="User avatar"
-                  className="h-10 w-10 rounded-full object-cover"
-                />
                 <div className="ml-3">
                   <p className="text-sm font-medium text-gray-100">{mockUser.name}</p>
                   <p className="text-xs text-gray-400">{mockUser.email}</p>
@@ -349,6 +362,31 @@ export default function RecipesPage() {
                       <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                     </svg>
                     Recipes
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/planner"
+                    className="flex w-full items-center rounded-md px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="mr-3 h-5 w-5"
+                    >
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                      <line x1="16" y1="2" x2="16" y2="6" />
+                      <line x1="8" y1="2" x2="8" y2="6" />
+                      <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>
+                    Meal Planner
                   </Link>
                 </li>
                 <li>

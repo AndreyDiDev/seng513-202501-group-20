@@ -8,9 +8,8 @@ import Link from "next/link"
 
 // Mock user data
 const mockUser = {
-  name: "Alex Johnson",
-  email: "alex@example.com",
-  avatar: "https://i.pravatar.cc/150?u=alex",
+  name: "Juanito Escobar",
+  email: "escobar@example.com",
   isPremium: false,
 }
 
@@ -68,8 +67,6 @@ export default function RecipeSubmissionPage() {
     instructions: [""],
     notes: "",
     tags: "",
-    image: null as File | null,
-    imagePreview: "",
   })
 
   // Handle text input changes
@@ -141,18 +138,6 @@ export default function RecipeSubmissionPage() {
     }
   }
 
-  // Handle image upload
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      setRecipeForm({
-        ...recipeForm,
-        image: file,
-        imagePreview: URL.createObjectURL(file),
-      })
-    }
-  }
-
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -165,12 +150,6 @@ export default function RecipeSubmissionPage() {
       recipeForm.instructions.some((inst) => !inst)
     ) {
       alert("Please fill in all required fields")
-      return
-    }
-
-    // Check if user is premium for posting recipes
-    if (!isPremium) {
-      alert("Only premium users can post recipes. Please upgrade your account.")
       return
     }
 
@@ -198,9 +177,6 @@ export default function RecipeSubmissionPage() {
           ingredients: [""],
           instructions: [""],
           notes: "",
-          tags: "",
-          image: null,
-          imagePreview: "",
         })
       }, 3000)
     } catch (error) {
@@ -216,16 +192,23 @@ export default function RecipeSubmissionPage() {
     setIsUpgrading(true)
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      // Make user premium
+      const res = await fetch("http://localhost:5003/api/user/makePremium", {
+        method: "GET",
+      });
+      
+      if (!res.ok) {
+        throw new Error("Failed to make user premium")
+      }
 
+      const result = await res.json()
+      console.log("User upgraded to premium:", result)
       // Success - update premium status
       setIsPremium(true)
       alert("Upgrade successful! You now have premium access.")
     } catch (error) {
-      console.error("Error upgrading to premium:", error)
-      alert("There was an error processing your upgrade. Please try again.")
-    } finally {
+      console.error("Error upgrading user:", error)
+    }finally {
       setIsUpgrading(false)
     }
   }
@@ -307,11 +290,6 @@ export default function RecipeSubmissionPage() {
             {/* User profile */}
             <div className="border-b border-gray-700 px-6 py-4">
               <div className="flex items-center">
-                <img
-                  src={mockUser.avatar || "/placeholder.svg"}
-                  alt="User avatar"
-                  className="h-10 w-10 rounded-full object-cover"
-                />
                 <div className="ml-3">
                   <p className="text-sm font-medium text-gray-100">{mockUser.name}</p>
                   <p className="text-xs text-gray-400">{mockUser.email}</p>
@@ -603,29 +581,6 @@ export default function RecipeSubmissionPage() {
                       required
                     />
                   </div>
-                  <div>
-                    <label htmlFor="image" className="block text-sm font-medium text-gray-300">
-                      Recipe Image
-                    </label>
-                    <input
-                      type="file"
-                      id="image"
-                      name="image"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
-                    />
-                  </div>
-                  {recipeForm.imagePreview && (
-                    <div className="col-span-2">
-                      <p className="mb-2 text-sm text-gray-300">Image Preview:</p>
-                      <img
-                        src={recipeForm.imagePreview || "/placeholder.svg"}
-                        alt="Recipe preview"
-                        className="h-40 w-auto rounded-md object-cover"
-                      />
-                    </div>
-                  )}
                   <div className="col-span-2">
                     <label htmlFor="description" className="block text-sm font-medium text-gray-300">
                       Description <span className="text-red-500">*</span>
@@ -740,20 +695,6 @@ export default function RecipeSubmissionPage() {
                       <option value="Medium">Medium</option>
                       <option value="Hard">Hard</option>
                     </select>
-                  </div>
-                  <div className="col-span-2">
-                    <label htmlFor="tags" className="block text-sm font-medium text-gray-300">
-                      Tags (comma separated)
-                    </label>
-                    <input
-                      type="text"
-                      id="tags"
-                      name="tags"
-                      value={recipeForm.tags}
-                      onChange={handleInputChange}
-                      placeholder="e.g. healthy, quick, vegetarian"
-                      className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
-                    />
                   </div>
                 </div>
               </div>

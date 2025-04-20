@@ -7,7 +7,7 @@ import {getRecipesByIngredients} from '../controllers/recipeController.js';
 import { requireRole } from "../utils/requireRole.mjs";
 
 
-router.post('/api/recipe', isAuthenticated, requireRole('premium'), createRecipeController);
+router.post('/api/recipe', createRecipeController);
 router.delete('/api/recipe/:id', isAuthenticated, requireRole('admin'), removeRecipeController);
 router.post('/api/recipe', getRecipesByIngredients);
 router.get('/api/recipe/all', isAuthenticated, getAllRecipesController);
