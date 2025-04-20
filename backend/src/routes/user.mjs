@@ -2,6 +2,7 @@ import {Router} from "express";
 const router = Router();
 import {createUserController} from '../controllers/userController.js'
 import { getUserFromEmail } from "../controllers/userController.js";
+import { isAuthenticated } from "../utils/isAuthenticated.mjs";
 
 
 router.post('/api/user', createUserController);
