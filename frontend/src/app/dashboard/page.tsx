@@ -412,9 +412,6 @@ export default function Dashboard() {
           {/* Content header */}
           <header className="flex h-16 items-center justify-between border-b border-gray-700 bg-gray-800 px-6">
             <h1 className="text-lg font-semibold text-gray-100">Dashboard Overview</h1>
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-400">Last updated: Today at 12:45 PM</span>
-            </div>
           </header>
 
           {/* Content body */}
@@ -436,9 +433,6 @@ export default function Dashboard() {
                     <p className="mt-2 text-sm text-gray-100">{panel.description}</p>
                     <div className="mt-4 flex items-center justify-between">
                       <span className="text-sm font-medium text-gray-200">{panel.stats}</span>
-                      <span className="rounded-full bg-white bg-opacity-20 px-3 py-1 text-xs font-medium text-white">
-                        View Details
-                      </span>
                     </div>
                   </div>
                 </Link>
