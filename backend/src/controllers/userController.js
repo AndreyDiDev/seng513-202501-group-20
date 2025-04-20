@@ -28,3 +28,19 @@ export const getUserFromID = async (req, res) => {
     res.status(500).json({error: 'Cannot find user'})
   }
 }
+
+export const buyPremiumController = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const user = await db.User.findByPk(userId);
+
+    if (!user) throw new Error('User not found');
+    if (user.isPremium) throw new Error('User is already premium');
+    
+    await user.update({ isPremium: true });
+    res.status(200).json({ message: 'User upgraded to premium' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to upgrade user to premium' });
+  }
+}
