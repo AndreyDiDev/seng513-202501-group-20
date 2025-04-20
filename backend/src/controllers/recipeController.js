@@ -8,7 +8,8 @@ const {Op, literal} = db.Sequelize;
 export const createRecipeController = async (req, res) => {
     const t = await db.sequelize.transaction(); // Begin transaction
     try {
-        const { title, time, calories, instructions, createdBy, ingredients } = req.body;
+        const { title, time, calories, instructions,ingredients } = req.body;
+        const createdBy = req.user.id; // Get the user ID from the request
         const recipe = await db.Recipe.create({ title, time, calories, instructions, createdBy}, { transaction: t });
 
         // Process ingredients safely
