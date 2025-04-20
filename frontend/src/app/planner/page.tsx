@@ -297,11 +297,6 @@ export default function PlannerPage() {
             {/* User profile */}
             <div className="border-b border-gray-700 px-6 py-4">
               <div className="flex items-center">
-                <img
-                  src={mockUser.avatar || "/placeholder.svg"}
-                  alt="User avatar"
-                  className="h-10 w-10 rounded-full object-cover"
-                />
                 <div className="ml-3">
                   <p className="text-sm font-medium text-gray-100">{mockUser.name}</p>
                   <p className="text-xs text-gray-400">{mockUser.email}</p>
@@ -345,7 +340,7 @@ export default function PlannerPage() {
                 </li>
                 <li>
                   <Link
-                    href="/dashboard/ingredients"
+                    href="/ingredients"
                     className="flex w-full items-center rounded-md px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700"
                   >
                     <svg
@@ -371,7 +366,7 @@ export default function PlannerPage() {
                 </li>
                 <li>
                   <Link
-                    href="/dashboard/recipes"
+                    href="/recipes"
                     className="flex w-full items-center rounded-md px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700"
                   >
                     <svg
@@ -397,7 +392,7 @@ export default function PlannerPage() {
                 </li>
                 <li>
                   <Link
-                    href="/dashboard/planner"
+                    href="/planner"
                     className="flex w-full items-center rounded-md px-4 py-2 text-sm font-medium bg-emerald-600 text-white"
                   >
                     <svg
@@ -422,7 +417,7 @@ export default function PlannerPage() {
                 </li>
                 <li>
                   <Link
-                    href="/dashboard/forum"
+                    href="/forum"
                     className="flex w-full items-center rounded-md px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700"
                   >
                     <svg
@@ -444,7 +439,7 @@ export default function PlannerPage() {
                 </li>
                 <li>
                   <Link
-                    href="/dashboard/account"
+                    href="/account"
                     className="flex w-full items-center rounded-md px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700"
                   >
                     <svg
@@ -524,11 +519,6 @@ export default function PlannerPage() {
                       {mealPlan[day as keyof typeof mealPlan]?.[meal] ? (
                         <div className="flex items-center justify-between rounded-md bg-gray-700 p-3">
                           <div className="flex items-center">
-                            <img
-                              src={mealPlan[day as keyof typeof mealPlan]?.[meal]?.image || "/placeholder.svg"}
-                              alt={mealPlan[day as keyof typeof mealPlan]?.[meal]?.name || "Meal"}
-                              className="mr-3 h-8 w-8 rounded-full object-cover"
-                            />
                             <span className="text-sm text-gray-100">
                               {mealPlan[day as keyof typeof mealPlan]?.[meal]?.name}
                             </span>
@@ -661,11 +651,6 @@ export default function PlannerPage() {
                   onClick={() => handleAssignRecipe(recipe.id)}
                   className="flex flex-col items-center rounded-md bg-gray-700 p-3 hover:bg-gray-600"
                 >
-                  <img
-                    src={recipe.image || "/placeholder.svg"}
-                    alt={recipe.name}
-                    className="mb-2 h-20 w-20 rounded-full object-cover"
-                  />
                   <span className="text-sm text-gray-100">{recipe.name}</span>
                 </button>
               ))}

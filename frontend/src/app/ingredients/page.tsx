@@ -518,7 +518,7 @@ export default function IngredientsPage() {
                 ))}
               </div>
 
-              {/* Ingredients list - now scrollable */}
+              {/* Ingredients list */}
               <div className="rounded-lg bg-gray-800 p-6 shadow-lg">
                 <h2 className="mb-4 text-lg font-medium text-gray-100">Your Ingredients</h2>
                 <div className="max-h-60 overflow-y-auto space-y-2 pr-2">
@@ -622,7 +622,7 @@ export default function IngredientsPage() {
                 </div>
               )}
 
-              {/* Matching Recipes - now before Add New Ingredient */}
+              {/* Matching Recipes - Add New Ingredient */}
               <div className="rounded-lg bg-gray-800 p-6 shadow-lg">
                 <h2 className="mb-4 text-lg font-medium text-gray-100">Matching Recipes</h2>
                 {matchingRecipes.length > 0 ? (
