@@ -44,6 +44,8 @@ export const getUserFromEmail = async (req, res) => {
 export const buyPremiumController = async (req, res) => {
   try {
     const user = req.user;
+    // console.log(req)
+    console.log(req.user)
     console.log(user)
     if (!user) throw new Error('User not found');
     if (user.role === "premium") throw new Error('User is already premium');

@@ -26,7 +26,7 @@ app.use(cors({
 app.use(
     session({
         secret: "zaid the dev",
-        saveUninitialized: true,
+        saveUninitialized: false,
         resave: false,
         cookie: {
             maxAge: 60000 * 60,
