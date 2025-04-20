@@ -9,6 +9,6 @@ import { buyPremiumController } from "../controllers/userController.js";
 
 router.post('/api/user', createUserController);
 router.get('/api/user/byEmail', isAuthenticated, getUserFromEmail);
-router.patch('/api/user/makePremium', isAuthenticated, requireRole('normal'), buyPremiumController);
+router.get('/api/user/makePremium', isAuthenticated, buyPremiumController);
 
 export default router;

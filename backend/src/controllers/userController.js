@@ -43,8 +43,7 @@ export const getUserFromEmail = async (req, res) => {
 
 export const buyPremiumController = async (req, res) => {
   try {
-    const { userId } = req.body;
-    const user = await db.User.findByPk(userId);
+    const user = req.user;
 
     if (!user) throw new Error('User not found');
     if (user.role === "premium") throw new Error('User is already premium');
