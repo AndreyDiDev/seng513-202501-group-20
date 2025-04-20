@@ -47,9 +47,9 @@ export const buyPremiumController = async (req, res) => {
     const user = await db.User.findByPk(userId);
 
     if (!user) throw new Error('User not found');
-    if (user.isPremium) throw new Error('User is already premium');
+    if (user.role === "premium") throw new Error('User is already premium');
     
-    await user.update({ isPremium: true });
+    await user.update({ role: "premium" });
     res.status(200).json({ message: 'User upgraded to premium' });
   } catch (err) {
     console.error(err);
