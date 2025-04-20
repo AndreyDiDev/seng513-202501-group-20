@@ -4,6 +4,7 @@ import {createUserController} from '../controllers/userController.js'
 import { getUserFromEmail } from "../controllers/userController.js";
 import { isAuthenticated } from "../utils/isAuthenticated.mjs";
 import { requireRole } from "../utils/requireRole.mjs";
+import { buyPremiumController } from "../controllers/userController.js";
 
 
 router.post('/api/user', createUserController);
