@@ -14,21 +14,41 @@ const [adminCode, setAdminCode] = useState("")
 const [error, setError] = useState("")
 const [isLoading, setIsLoading] = useState(false)
 
-const handleSubmit = (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault()
   setError("")
   setIsLoading(true)
 
-  // TODO: validate against backend
-  setTimeout(() => {
-    if (email === "admin@example.com" && password === "admin123" && adminCode === "MEAL-ADMIN-2023") {
-      router.push("/admin/page")
+  try {
+    const response = await fetch("http://localhost:5003/api/admin", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: "Admin",
+        email,
+        password,
+        enteredPin: adminCode,
+      }),
+    })
+
+    if (response.status === 201) {
+      const adminData = await response.json()
+      console.log("Admin created:", adminData)
+      router.push("/admindashboard") // navigate to admin dashboard
     } else {
-      setError("Invalid credentials. Please check your email, password, and admin code.")
+      const errorData = await response.json()
+      setError(errorData.error || "Admin creation failed.")
     }
+  } catch (err) {
+    console.error("Request error:", err)
+    setError("Something went wrong. Try again later.")
+  } finally {
     setIsLoading(false)
-  }, 1000)
+  }
 }
+
 
 return (
   <>
@@ -157,7 +177,7 @@ return (
           </form>
 
           <div className="mt-6 text-center text-xs sm:text-sm">
-            <Link href="/login/page" className="font-medium text-red-400 hover:text-red-300">
+            <Link href="/login" className="font-medium text-red-400 hover:text-red-300">
               Return to User Login
             </Link>
           </div>

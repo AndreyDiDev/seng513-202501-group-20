@@ -557,7 +557,7 @@ return (
                 </li>
                 <li>
                 <Link
-                    href="/dashboard/page"
+                    href="/dashboard"
                     className="flex w-full items-center rounded-md px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-gray-100"
                     onClick={() => setIsMobileMenuOpen(false)}
                 >
