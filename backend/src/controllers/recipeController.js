@@ -101,3 +101,14 @@ export const getRecipesByIngredients = async (req, res) => {
         res.status(500).json({ error: 'Failed to get recipes' });
     }
 };
+
+// Get all recipes
+export const getAllRecipesController = async (req, res) => {
+    try {
+        const recipes = await db.Recipe.findAll();
+        res.status(200).json(recipes);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to get recipes' });
+    }
+};
