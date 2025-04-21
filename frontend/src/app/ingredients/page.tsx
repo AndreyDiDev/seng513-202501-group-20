@@ -110,6 +110,7 @@ export default function IngredientsPage() {
     // Fetch matching recipes from the API
     fetch("http://localhost:5003/api/recipe", {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },

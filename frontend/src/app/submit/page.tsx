@@ -138,11 +138,9 @@ export default function RecipeSubmissionPage() {
     }
   }
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    // Validate form
+  
     if (
       !recipeForm.title ||
       !recipeForm.description ||
@@ -152,17 +150,31 @@ export default function RecipeSubmissionPage() {
       alert("Please fill in all required fields")
       return
     }
-
+  
     setIsSubmitting(true)
-
+  
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      // Success
+      const response = await fetch("http://localhost:5003/api/recipe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Important for sending session cookie
+        body: JSON.stringify({
+          title: recipeForm.title,
+          time: `${recipeForm.prepTime} + ${recipeForm.cookTime} minutes`,
+          calories: 0, // or whatever logic you want
+          instructions: recipeForm.instructions.join("\n"),
+          ingredients: recipeForm.ingredients,
+        }),
+      })
+  
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData?.error || "Failed to submit recipe")
+      }
+  
       setShowSuccess(true)
-
-      // Reset form after 3 seconds
       setTimeout(() => {
         setShowSuccess(false)
         setRecipeForm({
@@ -177,6 +189,7 @@ export default function RecipeSubmissionPage() {
           ingredients: [""],
           instructions: [""],
           notes: "",
+          tags: "",
         })
       }, 3000)
     } catch (error) {
@@ -186,6 +199,7 @@ export default function RecipeSubmissionPage() {
       setIsSubmitting(false)
     }
   }
+  
 
   // Handle premium upgrade
   const handleUpgradeToPremium = async () => {
@@ -195,6 +209,7 @@ export default function RecipeSubmissionPage() {
       // Make user premium
       const res = await fetch("http://localhost:5003/api/user/makePremium", {
         method: "GET",
+        credentials: "include"
       });
       
       if (!res.ok) {

@@ -135,7 +135,10 @@ export default function RecipesPage() {
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const res = await fetch("http://localhost:5003/api/recipes/all")
+        const res = await fetch("http://localhost:5003/api/recipe/all", {
+          method: 'GET',
+          credentials: 'include',
+        })
         if (!res.ok) {
           throw new Error("Failed to fetch recipes")
         }
@@ -150,31 +153,34 @@ export default function RecipesPage() {
   }, [])
 
 
-  // Filter and sort recipes
   const filteredRecipes = recipes
-    .filter((recipe) => {
-      // Filter by search term
-      const matchesSearch =
-        recipe.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        recipe.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        recipe.ingredients.some((ing) => ing.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        recipe.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+  .filter((recipe) => {
+    const name = recipe.name?.toLowerCase() || ""
+    const description = recipe.description?.toLowerCase() || ""
+    const ingredients = recipe.ingredients || []
+    const tags = recipe.tags || []
 
-      // Filter by tag
-      const matchesTag = activeTag === "all" || recipe.tags.includes(activeTag)
+    const matchesSearch =
+      name.includes(searchTerm.toLowerCase()) ||
+      description.includes(searchTerm.toLowerCase()) ||
+      ingredients.some((ing) => ing?.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      tags.some((tag) => tag?.toLowerCase().includes(searchTerm.toLowerCase()))
 
-      return matchesSearch && matchesTag
-    })
-    .sort((a, b) => {
-      // Sort by selected criteria
-      if (sortBy === "rating") {
-        return b.rating - a.rating
-      } else if (sortBy === "time") {
-        return Number.parseInt(a.prepTime) - Number.parseInt(b.prepTime)
-      } else {
-        return b.id - a.id // newest first
-      }
-    })
+    const matchesTag = activeTag === "all" || tags.includes(activeTag)
+
+    return matchesSearch && matchesTag
+  })
+  .sort((a, b) => {
+    if (sortBy === "rating") {
+      return (b.rating ?? 0) - (a.rating ?? 0)
+    } else if (sortBy === "time") {
+      const aTime = parseInt(a.prepTime) || 0
+      const bTime = parseInt(b.prepTime) || 0
+      return aTime - bTime
+    } else {
+      return (b.id ?? 0) - (a.id ?? 0)
+    }
+  })
 
   // Toggle favorite status
   const toggleFavorite = (id: number) => {
