@@ -143,13 +143,6 @@ export default function RecipesPage() {
           throw new Error("Failed to fetch recipes")
         }
         const data = await res.json()
-        const response = await fetch("http://localhost:5003/api/recipe/all", {
-          method: "GET",
-        })
-
-        const data = await response.json()
-
-        console.log(data)
         setRecipes(data)
       } catch (err) {
         console.error("Error loading recipes:", err)

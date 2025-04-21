@@ -237,7 +237,6 @@ export default function RecipeSubmissionPage() {
   // Handle premium upgrade
   const handleUpgradeToPremium = async () => {
     setIsUpgrading(true)
-    console.log("Upgrading user to premium...")
 
     try {
       // Make user premium
@@ -245,18 +244,12 @@ export default function RecipeSubmissionPage() {
         method: "GET",
         credentials: "include"
       });
+      
+      if (!res.ok) {
+        throw new Error("Failed to make user premium")
+      }
 
       const result = await res.json()
-
-      const meres = await fetch("http://localhost:5003/api/me", {
-        method: "GET",
-        credentials: "include",
-      });
-    
-      const meresult = await meres.json()
-
-      console.log(meresult)
-
       console.log("User upgraded to premium:", result)
       // Success - update premium status
       setIsPremium(true)
