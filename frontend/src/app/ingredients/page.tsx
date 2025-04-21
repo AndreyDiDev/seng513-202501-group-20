@@ -178,7 +178,7 @@ export default function IngredientsPage() {
   // Logout function
   const handleLogout = () => {
     // In a real app, you would handle logout logic here
-    router.push("/login/page")
+    router.push("/login")
   }
 
   // Add a function to view recipe details
