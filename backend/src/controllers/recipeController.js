@@ -106,7 +106,13 @@ export const getRecipesByIngredients = async (req, res) => {
 // Get all recipes
 export const getAllRecipesController = async (req, res) => {
     try {
-        const recipes = await db.Recipe.findAll();
+        const recipes = await db.Recipe.findAll({
+            include:{
+                model: db.Ingredient,
+                through: {attributes : []},
+                attributes : ['name']
+            }
+        });
         res.status(200).json(recipes);
     } catch (err) {
         console.error(err);
