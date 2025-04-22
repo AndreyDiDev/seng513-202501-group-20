@@ -7,11 +7,10 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Head from "next/head"
 
-// Mock user data
+// User data
 const mockUser = {
-  name: "Alex Johnson",
-  email: "alex@example.com",
-  avatar: "https://i.pravatar.cc/150?u=alex",
+  name: "Juanito Escobar",
+  email: "escobar@example.com",
   isPremium: false,
 }
 
@@ -261,11 +260,6 @@ export default function ForumPage() {
             {/* User profile */}
             <div className="border-b border-gray-700 px-6 py-4">
               <div className="flex items-center">
-                <img
-                  src={mockUser.avatar || "/placeholder.svg"}
-                  alt="User avatar"
-                  className="h-10 w-10 rounded-full object-cover"
-                />
                 <div className="ml-3">
                   <p className="text-sm font-medium text-gray-100">{mockUser.name}</p>
                   <p className="text-xs text-gray-400">{mockUser.email}</p>
@@ -314,7 +308,7 @@ export default function ForumPage() {
                   </Link>
                 </li>
                 <li>
-                  <Link
+                <Link
                     href="/ingredients"
                     className="flex w-full items-center rounded-md px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700"
                   >
@@ -330,17 +324,14 @@ export default function ForumPage() {
                       strokeLinejoin="round"
                       className="mr-3 h-5 w-5"
                     >
-                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14z"></path>
-                      <path d="M8 11a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
-                      <path d="M16 15a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
-                      <path d="M11 18c-2 0-3-2-3-4s1-4 3-4"></path>
-                      <path d="M13 18c2 0 3-2 3-4s-1-4-3-4"></path>
+                      <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z" />
+                      <line x1="6" x2="18" y1="17" y2="17" />
                     </svg>
                     Ingredients
                   </Link>
                 </li>
                 <li>
-                  <Link
+                <Link
                     href="/recipes"
                     className="flex w-full items-center rounded-md px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700"
                   >
@@ -356,11 +347,8 @@ export default function ForumPage() {
                       strokeLinejoin="round"
                       className="mr-3 h-5 w-5"
                     >
-                      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-                      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-                      <line x1="8" y1="3" x2="8" y2="7"></line>
-                      <line x1="16" y1="3" x2="16" y2="7"></line>
-                      <line x1="2" y1="15" x2="10" y2="15"></line>
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
                     </svg>
                     Recipes
                   </Link>

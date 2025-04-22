@@ -9,9 +9,8 @@ import { useRouter } from "next/navigation"
 
 // Mock user data
 const mockUser = {
-  name: "Alex Johnson",
-  email: "alex@example.com",
-  avatar: "https://i.pravatar.cc/150?u=alex",
+  name: "Juanito Escobar",
+  email: "escobar@example.com",
   isPremium: false,
 }
 
@@ -262,11 +261,6 @@ export default function IngredientsPage() {
             {/* User profile */}
             <div className="border-b border-gray-700 px-6 py-4">
               <div className="flex items-center">
-                <img
-                  src={mockUser.avatar || "/placeholder.svg"}
-                  alt="User avatar"
-                  className="h-10 w-10 rounded-full object-cover"
-                />
                 <div className="ml-3">
                   <p className="text-sm font-medium text-gray-100">{mockUser.name}</p>
                   <p className="text-xs text-gray-400">{mockUser.email}</p>
@@ -332,7 +326,7 @@ export default function IngredientsPage() {
                   </Link>
                 </li>
                 <li>
-                  <Link
+                <Link
                     href="/recipes"
                     className="flex w-full items-center rounded-md px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700"
                   >
@@ -348,9 +342,8 @@ export default function IngredientsPage() {
                       strokeLinejoin="round"
                       className="mr-3 h-5 w-5"
                     >
-                      <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z" />
-                      <path d="M3 5h18" />
-                      <path d="M10 3h4" />
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
                     </svg>
                     Recipes
                   </Link>
@@ -381,29 +374,30 @@ export default function IngredientsPage() {
                   </Link>
                 </li>
                 <li>
-                  <Link
+                <Link
                     href="/submit"
                     className="flex w-full items-center rounded-md px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="mr-3 h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                      />
-                    </svg>
+                   <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="mr-3 h-5 w-5"
+                  >
+                    <path d="M12 5v14"></path>
+                    <path d="M5 12h14"></path>
+                  </svg>
                     Submit Recipe
                   </Link>
                 </li>
                 <li>
-                  <Link
+                <Link
                     href="/forum"
                     className="flex w-full items-center rounded-md px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700"
                   >
@@ -419,14 +413,13 @@ export default function IngredientsPage() {
                       strokeLinejoin="round"
                       className="mr-3 h-5 w-5"
                     >
-                      <path d="M4 21l1.5-4.5A3.5 3.5 0 0 1 9 13H15a3.5 3.5 0 0 1 3.5 3.5L20 21" />
-                      <line x1="9" x2="15" y1="9" y2="9" />
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                     </svg>
                     Recipe Forum
                   </Link>
                 </li>
                 <li>
-                  <Link
+                <Link
                     href="/account"
                     className="flex w-full items-center rounded-md px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700"
                   >
@@ -442,7 +435,7 @@ export default function IngredientsPage() {
                       strokeLinejoin="round"
                       className="mr-3 h-5 w-5"
                     >
-                      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                       <circle cx="12" cy="7" r="4" />
                     </svg>
                     Account

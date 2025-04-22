@@ -318,7 +318,7 @@ export default function RecipesPage() {
                   </Link>
                 </li>
                 <li>
-                  <Link
+                <Link
                     href="/ingredients"
                     className="flex w-full items-center rounded-md px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700"
                   >
@@ -334,15 +334,8 @@ export default function RecipesPage() {
                       strokeLinejoin="round"
                       className="mr-3 h-5 w-5"
                     >
-                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14z"></path>
-                      <path d="M8 2v3"></path>
-                      <path d="M16 2v3"></path>
-                      <path d="M3 10h18"></path>
-                      <path d="M12 15h6"></path>
-                      <path d="M7 15h.01"></path>
-                      <path d="M7 20h.01"></path>
-                      <path d="M12 20h.01"></path>
-                      <path d="M17 20h.01"></path>
+                      <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z" />
+                      <line x1="6" x2="18" y1="17" y2="17" />
                     </svg>
                     Ingredients
                   </Link>
@@ -396,24 +389,25 @@ export default function RecipesPage() {
                   </Link>
                 </li>
                 <li>
-                  <Link
+                <Link
                     href="/submit"
                     className="flex w-full items-center rounded-md px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="mr-3 h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                      />
-                    </svg>
+                   <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="mr-3 h-5 w-5"
+                  >
+                    <path d="M12 5v14"></path>
+                    <path d="M5 12h14"></path>
+                  </svg>
                     Submit Recipe
                   </Link>
                 </li>
@@ -440,7 +434,7 @@ export default function RecipesPage() {
                   </Link>
                 </li>
                 <li>
-                  <Link
+                <Link
                     href="/account"
                     className="flex w-full items-center rounded-md px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700"
                   >
@@ -456,8 +450,8 @@ export default function RecipesPage() {
                       strokeLinejoin="round"
                       className="mr-3 h-5 w-5"
                     >
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                      <circle cx="12" cy="7" r="4"></circle>
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
                     </svg>
                     Account
                   </Link>
