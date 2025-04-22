@@ -166,11 +166,17 @@ export default function RecipeSubmissionPage() {
         },
         credentials: "include", // Important for sending session cookie
         body: JSON.stringify({
-          title: recipeForm.title,
-          time: `${recipeForm.prepTime} + ${recipeForm.cookTime} minutes`,
-          calories: 0, // or whatever logic you want
-          instructions: recipeForm.instructions.join("\n"),
-          ingredients: recipeForm.ingredients,
+          title: recipeForm.title || "Untitled Recipe",
+          time: recipeForm.prepTime && recipeForm.cookTime
+            ? `${recipeForm.prepTime} + ${recipeForm.cookTime} minutes`
+            : "0 minutes",
+          calories: recipeForm.calories ?? 0,
+          instructions: Array.isArray(recipeForm.instructions) && recipeForm.instructions.length > 0
+            ? recipeForm.instructions.join("\n")
+            : "No instructions provided.",
+          ingredients: Array.isArray(recipeForm.ingredients) && recipeForm.ingredients.length > 0
+            ? recipeForm.ingredients
+            : ["Unknown ingredient"],
         }),
       })
   

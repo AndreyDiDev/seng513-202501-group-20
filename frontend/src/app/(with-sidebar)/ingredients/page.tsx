@@ -14,6 +14,16 @@ const mockUser = {
   isPremium: false,
 }
 
+type Recipe = {
+  id: number
+  name: string
+  ingredients: string[]
+  image?: string
+  instructions?: string
+  tags?: string[]
+}
+
+
 // Mock ingredients categories
 const ingredientCategories = [
   { id: "proteins", name: "Proteins", color: "bg-red-900 text-red-100" },
@@ -48,37 +58,12 @@ const mockIngredients = [
   { id: 20, name: "Pasta", category: "grains" },
 ]
 
-// Mock database recipes
-const dbRecipes = [
-  {
-    id: 101,
-    name: "Vegetarian Pasta Primavera",
-    ingredients: ["Pasta", "Broccoli", "Bell Peppers", "Carrots", "Olive Oil", "Garlic"],
-    image: "https://source.unsplash.com/random/300x200/?pasta",
-    tags: ["vegetarian", "pasta", "quick"],
-  },
-  {
-    id: 102,
-    name: "Avocado Toast with Poached Egg",
-    ingredients: ["Bread", "Avocado", "Eggs", "Salt", "Pepper", "Red Pepper Flakes"],
-    image: "https://source.unsplash.com/random/300x200/?avocado-toast",
-    tags: ["breakfast", "vegetarian", "quick"],
-  },
-  {
-    id: 103,
-    name: "Grilled Chicken Salad",
-    ingredients: ["Chicken Breast", "Mixed Greens", "Tomatoes", "Cucumber", "Balsamic Vinaigrette"],
-    image: "https://source.unsplash.com/random/300x200/?chicken-salad",
-    tags: ["protein", "salad", "healthy"],
-  },
-]
-
 export default function IngredientsPage() {
   const router = useRouter()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [selectedIngredients, setSelectedIngredients] = useState<number[]>([])
   const [availableIngredients, setAvailableIngredients] = useState<number[]>([])
-  const [matchingRecipes, setMatchingRecipes] = useState<typeof dbRecipes>([])
+  const [matchingRecipes, setMatchingRecipes] = useState<typeof Recipe>([])
   const [newIngredient, setNewIngredient] = useState("")
   const [newIngredientCategory, setNewIngredientCategory] = useState("proteins")
   const [ingredients, setIngredients] = useState(mockIngredients)
@@ -86,7 +71,7 @@ export default function IngredientsPage() {
   const [searchTerm, setSearchTerm] = useState("")
 
   // Add a new state for the selected recipe and panel visibility
-  const [selectedRecipe, setSelectedRecipe] = useState<(typeof dbRecipes)[0] | null>(null)
+  const [selectedRecipe, setSelectedRecipe] = useState<(typeof Recipe)[0] | null>(null)
 
   // Find ingredient name by ID
   const getIngredientNameById = (id: number) => {
@@ -99,15 +84,16 @@ export default function IngredientsPage() {
     // If no ingredients are selected, show all
     if (selectedIngredients.length === 0) {
       setAvailableIngredients(ingredients.map((ing) => ing.id))
-      setMatchingRecipes(dbRecipes)
       return
     }
-  
-    // Convert selected ingredient IDs to names
-    const selectedIngredientNames = selectedIngredients.map(getIngredientNameById)
+
+    // Convert selected IDs to names
+    const selectedIngredientNames = selectedIngredients.map((id) => getIngredientNameById(id))
+
+    console.log("selected " + selectedIngredientNames)
   
     // Fetch matching recipes from the API
-    fetch("http://localhost:5003/api/recipe", {
+    fetch("http://localhost:5003/api/recipe/filteredGet", {
       method: "POST",
       credentials: "include",
       headers: {
@@ -119,20 +105,23 @@ export default function IngredientsPage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        setMatchingRecipes(data)
-  
-        // Extract ingredient names from returned recipes
-        const availableIngredientNames = new Set<string>()
-        data.forEach((recipe: (typeof dbRecipes)[0]) => {
-          recipe.ingredients.forEach((ing: string) => availableIngredientNames.add(ing))
-        })
-  
-        // Convert available ingredient names to IDs
-        const availableIds = ingredients
-          .filter((ing) => availableIngredientNames.has(ing.name))
-          .map((ing) => ing.id)
-  
-        setAvailableIngredients(availableIds)
+
+        console.log("data " + data)
+        
+        // Convert the fetched recipes
+        const parsedRecipes = data.map((recipe: any) => ({
+          id: recipe.id,
+          name: recipe.title,
+          ingredients: recipe.ingredients || [],
+          instructions: recipe.instructions || "",
+          tags: [],
+        }))
+
+        console.log(parsedRecipes)
+
+        // Set matchingRecipes
+        setMatchingRecipes(parsedRecipes)
+
       })
       .catch((error) => {
         console.error("Error fetching recipes:", error)
@@ -180,7 +169,7 @@ export default function IngredientsPage() {
   }
 
   // Add a function to view recipe details
-  const viewRecipeDetails = (recipe: (typeof dbRecipes)[0]) => {
+  const viewRecipeDetails = (recipe: (typeof Recipe)[0]) => {
     setSelectedRecipe(recipe === selectedRecipe ? null : recipe)
   }
 
@@ -456,48 +445,12 @@ export default function IngredientsPage() {
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-300 mb-2">Ingredients</h3>
-                      <ul className="space-y-1 text-gray-300">
-                        {selectedRecipe.ingredients.map((ingredient, index) => (
-                          <li key={index} className="flex items-center">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="h-4 w-4 mr-2 text-emerald-400"
-                            >
-                              <polyline points="9 11 12 14 22 4" />
-                            </svg>
-                            {ingredient}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
 
                     <div>
                       <h3 className="text-sm font-medium text-gray-300 mb-2">Instructions</h3>
                       <p className="text-gray-400">
-                        This is a placeholder for recipe instructions. This would contain the
-                        full preparation instructions for {selectedRecipe.name}.
+                        {selectedRecipe.instructions || "No instructions available."}
                       </p>
-
-                      <div className="mt-4">
-                        <h3 className="text-sm font-medium text-gray-300 mb-2">Tags</h3>
-                        <div className="flex flex-wrap gap-1">
-                          {selectedRecipe.tags.map((tag) => (
-                            <span key={tag} className="rounded-full bg-gray-700 px-2 py-0.5 text-xs text-gray-300">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
                     </div>
                   </div>
 
