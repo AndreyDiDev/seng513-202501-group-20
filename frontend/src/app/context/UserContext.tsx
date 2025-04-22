@@ -38,7 +38,7 @@ export const UserProvider = ({ children }) => {
   }, [])
 
   const updateUser = async () => {
-    const res = await fetch("/api/me", { credentials: "include" })
+    const res = await fetch("http://localhost:5003/api/me", { credentials: "include" })
     const data = await res.json()
     setUser(data)
   }

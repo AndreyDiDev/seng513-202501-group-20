@@ -5,43 +5,41 @@ import type React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { useUser } from "@/app/context/UserContext"
 
 export default function AccountPage() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState("profile")
   const [isUpgrading, setIsUpgrading] = useState(false)
+  const { user, isLoading, updateUser } = useUser();
+  const [premium, setPremium] = useState(user?.role)
+  console.log(user)
 
-  // Mock user data
-  const [userData, setUserData] = useState({
-    name: "Juanito Escobar",
-    email: "escobar@example.com",
-    isPremium: false,
-    notifications: {
-      email: true,
-      push: false,
-      newsletter: true,
-    },
-  })
 
-  // Handle premium upgrade
+
   const handleUpgradeToPremium = async () => {
     setIsUpgrading(true)
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      // Make user premium
+      const res = await fetch("http://localhost:5003/api/user/makePremium", {
+        method: "GET",
+        credentials: "include"
+      });
+      
+      if (!res.ok) {
+        throw new Error("Failed to make user premium")
+      }
 
+      const result = await res.json()
+      console.log("User upgraded to premium:", result)
       // Success - update premium status
-      setUserData({
-        ...userData,
-        isPremium: true,
-      })
-
+      // Update user role in context
+      await updateUser()
       alert("Upgrade successful! You now have premium access.")
     } catch (error) {
-      console.error("Error upgrading to premium:", error)
-      alert("There was an error processing your upgrade. Please try again.")
-    } finally {
+      console.error("Error upgrading user:", error)
+    }finally {
       setIsUpgrading(false)
     }
   }
@@ -51,17 +49,20 @@ export default function AccountPage() {
     e.preventDefault()
     alert("Profile updated successfully!")
   }
-
+  const [notifications, setNotifications] = useState({
+    email: true,
+    push: false,
+    newsletter: true,
+  })
+  
   // Handle notification toggle
-  const handleNotificationToggle = (type: string) => {
-    setUserData({
-      ...userData,
-      notifications: {
-        ...userData.notifications,
-        [type]: !userData.notifications[type as keyof typeof userData.notifications],
-      },
-    })
+  const handleNotificationToggle = (type: keyof typeof notifications) => {
+    setNotifications((prev) => ({
+      ...prev,
+      [type]: !prev[type],
+    }))
   }
+  
 
   // Handle logout
   const handleLogout = () => {
@@ -146,10 +147,10 @@ export default function AccountPage() {
           <div className="md:col-span-1">
             <div className="rounded-lg bg-gray-800 p-6 shadow">
               <div className="mb-6 flex flex-col items-center">
-                <h2 className="text-xl font-bold">{userData.name}</h2>
-                <p className="text-sm text-gray-400">{userData.email}</p>
+                <h2 className="text-xl font-bold">{user?.name}</h2>
+                <p className="text-sm text-gray-400">{user?.email}</p>
                 <div className="mt-2">
-                  {userData.isPremium ? (
+                  {user?.role === "premium" ? (
                     <span className="inline-flex items-center rounded-full bg-emerald-600 px-3 py-1 text-xs font-medium text-white">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -313,41 +314,21 @@ export default function AccountPage() {
                 <form onSubmit={handleProfileUpdate}>
                   <div className="mb-6 grid gap-6 md:grid-cols-2">
                     <div>
+                      
                       <label htmlFor="name" className="mb-2 block text-sm font-medium">
                         Full Name
                       </label>
-                      <input
-                        type="text"
-                        id="name"
-                        value={userData.name}
-                        onChange={(e) => setUserData({ ...userData, name: e.target.value })}
-                        className="w-full rounded-md border border-gray-700 bg-gray-700 px-4 py-2 text-gray-100 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                      />
+                      <h3>{user?.name}</h3>
                     </div>
                     <div>
+
                       <label htmlFor="email" className="mb-2 block text-sm font-medium">
                         Email Address
                       </label>
-                      <input
-                        type="email"
-                        id="email"
-                        value={userData.email}
-                        onChange={(e) => setUserData({ ...userData, email: e.target.value })}
-                        className="w-full rounded-md border border-gray-700 bg-gray-700 px-4 py-2 text-gray-100 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                      />
+                      <h3>{user?.email}</h3>
                     </div>
                   </div>
-                  <div className="mb-6">
-                    <label htmlFor="bio" className="mb-2 block text-sm font-medium">
-                      Bio
-                    </label>
-                    <textarea
-                      id="bio"
-                      rows={4}
-                      placeholder="Tell us about yourself..."
-                      className="w-full rounded-md border border-gray-700 bg-gray-700 px-4 py-2 text-gray-100 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                    ></textarea>
-                  </div>
+                 
                   <div className="flex justify-end">
                     <button
                       type="submit"
@@ -417,7 +398,7 @@ export default function AccountPage() {
               <div className="rounded-lg bg-gray-800 p-6 shadow">
                 <h2 className="mb-6 text-xl font-bold">Billing & Subscription</h2>
 
-                {userData.isPremium ? (
+                {premium? (
                   <div>
                     <div className="mb-6 rounded-lg bg-emerald-900/30 p-4">
                       <div className="flex items-center">

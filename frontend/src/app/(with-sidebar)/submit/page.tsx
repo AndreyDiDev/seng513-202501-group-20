@@ -5,6 +5,8 @@ import type React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { useUser } from "@/app/context/UserContext"
+
 
 // Mock user data
 const mockUser = {
@@ -48,10 +50,13 @@ const cuisineTypes = [
 export default function RecipeSubmissionPage() {
   const router = useRouter()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isPremium, setIsPremium] = useState(mockUser.isPremium)
   const [isUpgrading, setIsUpgrading] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  const { user, isLoading, updateUser } = useUser();
+
+  const isPremium = user?.role === 'premium'
+
 
   // Form state
   const [recipeForm, setRecipeForm] = useState({
@@ -221,7 +226,8 @@ export default function RecipeSubmissionPage() {
       const result = await res.json()
       console.log("User upgraded to premium:", result)
       // Success - update premium status
-      setIsPremium(true)
+      // Update user role in context
+      await updateUser()
       alert("Upgrade successful! You now have premium access.")
     } catch (error) {
       console.error("Error upgrading user:", error)
@@ -234,7 +240,7 @@ export default function RecipeSubmissionPage() {
   const handleLogout = () => {
     router.push("/login")
   }
-
+  if (isLoading) return <div className="text-white p-4">Loading...</div>
   return (
     <>
 

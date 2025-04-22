@@ -6,106 +6,18 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
-// Mock user data
-const mockUser = {
-  name: "Juanito Escobar",
-  email: "escobar@example.com",
-  isPremium: false,
+interface Recipe {
+  id: number
+  title: string
+  instructions: string
+  ingredients: string[]
+  tags: string[]
+  rating?: number
+  prepTime?: string
+  calories?: number
+  isFavorite?: boolean
 }
 
-// Mock recipes
-const mockRecipes = [
-  {
-    id: 1,
-    name: "Chicken Stir Fry",
-    description: "Quick and easy chicken stir fry with vegetables and soy sauce.",
-    ingredients: ["Chicken Breast", "Broccoli", "Carrots", "Soy Sauce", "Garlic", "Ginger"],
-    instructions:
-      "1. Cut chicken into strips. 2. Stir-fry chicken until cooked. 3. Add vegetables and stir-fry. 4. Add sauce and simmer.",
-    prepTime: "25 mins",
-    calories: 450,
-    image: "https://source.unsplash.com/random/300x200/?stirfry",
-    author: "Chef Mike",
-    rating: 4.8,
-    tags: ["quick", "protein", "asian"],
-    isFavorite: true,
-  },
-  {
-    id: 2,
-    name: "Salmon with Quinoa",
-    description: "Healthy salmon fillet with quinoa and steamed vegetables.",
-    ingredients: ["Salmon", "Quinoa", "Spinach", "Lemon", "Olive Oil", "Dill"],
-    instructions:
-      "1. Cook quinoa according to package. 2. Season salmon and bake. 3. Steam spinach. 4. Serve salmon over quinoa with spinach.",
-    prepTime: "30 mins",
-    calories: 520,
-    image: "https://source.unsplash.com/random/300x200/?salmon",
-    author: "Chef Lisa",
-    rating: 4.7,
-    tags: ["healthy", "seafood", "protein"],
-    isFavorite: false,
-  },
-  {
-    id: 3,
-    name: "Vegetarian Pasta Primavera",
-    description: "Classic Italian pasta dish with fresh spring vegetables.",
-    ingredients: ["Pasta", "Broccoli", "Bell Peppers", "Carrots", "Olive Oil", "Garlic"],
-    instructions:
-      "1. Cook pasta according to package. 2. Sauté vegetables in olive oil and garlic. 3. Combine pasta and vegetables. 4. Season with salt and pepper.",
-    prepTime: "20 mins",
-    calories: 380,
-    image: "https://source.unsplash.com/random/300x200/?pasta",
-    author: "Chef Maria",
-    rating: 4.5,
-    tags: ["vegetarian", "pasta", "quick"],
-    isFavorite: true,
-  },
-  {
-    id: 4,
-    name: "Avocado Toast with Poached Egg",
-    description: "Simple and nutritious breakfast with creamy avocado and poached egg.",
-    ingredients: ["Bread", "Avocado", "Eggs", "Salt", "Pepper", "Red Pepper Flakes"],
-    instructions:
-      "1. Toast bread. 2. Mash avocado and spread on toast. 3. Poach eggs. 4. Top toast with poached eggs and season.",
-    prepTime: "15 mins",
-    calories: 320,
-    image: "https://source.unsplash.com/random/300x200/?avocado-toast",
-    author: "Chef Alex",
-    rating: 4.9,
-    tags: ["breakfast", "vegetarian", "quick"],
-    isFavorite: false,
-  },
-  {
-    id: 5,
-    name: "Beef Tacos",
-    description: "Authentic Mexican tacos with seasoned beef and fresh toppings.",
-    ingredients: ["Ground Beef", "Taco Shells", "Lettuce", "Tomatoes", "Cheese", "Salsa"],
-    instructions:
-      "1. Brown beef and add taco seasoning. 2. Prepare toppings. 3. Fill taco shells with beef and toppings.",
-    prepTime: "25 mins",
-    calories: 480,
-    image: "https://source.unsplash.com/random/300x200/?tacos",
-    author: "Chef Carlos",
-    rating: 4.6,
-    tags: ["mexican", "beef", "dinner"],
-    isFavorite: true,
-  },
-  {
-    id: 6,
-    name: "Mushroom Risotto",
-    description: "Creamy Italian rice dish with mushrooms and parmesan.",
-    ingredients: ["Arborio Rice", "Mushrooms", "Onion", "White Wine", "Vegetable Stock", "Parmesan"],
-    instructions:
-      "1. Sauté onions and mushrooms. 2. Add rice and toast. 3. Add wine and stock gradually, stirring. 4. Finish with parmesan.",
-    prepTime: "40 mins",
-    calories: 450,
-    image: "https://source.unsplash.com/random/300x200/?risotto",
-    author: "Chef Giovanni",
-    rating: 4.7,
-    tags: ["italian", "vegetarian", "dinner"],
-    isFavorite: false,
-  },
-]
 
 // Recipe tags for filtering
 const recipeTags = [
@@ -128,9 +40,9 @@ export default function RecipesPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [activeTag, setActiveTag] = useState("all")
   const [sortBy, setSortBy] = useState("rating") // rating, time, newest
-  const [recipes, setRecipes] = useState([])
+  const [recipes, setRecipes] = useState<Recipe[]>([])
   const [showFilters, setShowFilters] = useState(false)
-  const [selectedRecipe, setSelectedRecipe] = useState(null)
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null)
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -155,14 +67,14 @@ export default function RecipesPage() {
 
   const filteredRecipes = recipes
   .filter((recipe) => {
-    const name = recipe.name?.toLowerCase() || ""
-    const description = recipe.description?.toLowerCase() || ""
+    const name = recipe.title.toLowerCase() || ""
+    const instructions = recipe.instructions.toLowerCase() || ""
     const ingredients = recipe.ingredients || []
     const tags = recipe.tags || []
 
     const matchesSearch =
       name.includes(searchTerm.toLowerCase()) ||
-      description.includes(searchTerm.toLowerCase()) ||
+      instructions.includes(searchTerm.toLowerCase()) ||
       ingredients.some((ing) => ing?.toLowerCase().includes(searchTerm.toLowerCase())) ||
       tags.some((tag) => tag?.toLowerCase().includes(searchTerm.toLowerCase()))
 
@@ -174,13 +86,14 @@ export default function RecipesPage() {
     if (sortBy === "rating") {
       return (b.rating ?? 0) - (a.rating ?? 0)
     } else if (sortBy === "time") {
-      const aTime = parseInt(a.prepTime) || 0
-      const bTime = parseInt(b.prepTime) || 0
+      const aTime = parseInt(a.prepTime || "0")
+      const bTime = parseInt(b.prepTime || "0")
       return aTime - bTime
     } else {
       return (b.id ?? 0) - (a.id ?? 0)
     }
   })
+
 
   // Toggle favorite status
   const toggleFavorite = (id: number) => {
@@ -519,7 +432,7 @@ export default function RecipesPage() {
                     onClick={() => setSelectedRecipe(recipe)}
                   >
                     <div className="flex justify-between items-center">
-                      <h3 className="text-lg font-medium text-gray-100">{recipe.name}</h3>
+                      <h3 className="text-lg font-medium text-gray-100">{recipe.title}</h3>
                       <button
                         onClick={(e) => {
                           e.stopPropagation()

@@ -4,12 +4,16 @@ import React from "react"
 // import Head from "next/head"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useUser } from "@/app/context/UserContext"
 
 export default function LoginPage() {
   const router = useRouter()
   const [email, setEmail] = React.useState("")
   const [password, setPassword] = React.useState("")
   const [error, setError] = React.useState("")
+  const { updateUser } = useUser()
+
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -29,7 +33,7 @@ export default function LoginPage() {
       })
   
       if (response.status === 200) {
-        
+        await updateUser()
         // Save data to localStorage
         router.push(
           `/dashboard?email=${encodeURIComponent(email)}`

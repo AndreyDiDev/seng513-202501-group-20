@@ -2,12 +2,13 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter , usePathname} from "next/navigation"
 import { useUser } from "../context/UserContext"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const router = useRouter()
+  const pathname = usePathname()
 
   const { user, isLoading } = useUser()
 
@@ -74,13 +75,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {/* Navigation */}
           <nav className="flex-1 overflow-y-auto px-4 py-4">
             <ul className="space-y-2">
-              <SidebarLink href="/dashboard" label="Dashboard" icon="home" />
-              <SidebarLink href="/ingredients" label="Ingredients" icon="bowl" />
-              <SidebarLink href="/recipes" label="Recipes" icon="book" active />
-              <SidebarLink href="/planner" label="Meal Planner" icon="calendar" />
-              <SidebarLink href="/submit" label="Submit Recipe" icon="plus" />
-              <SidebarLink href="/forum" label="Recipe Forum" icon="chat" />
-              <SidebarLink href="/account" label="Account" icon="user" />
+            <SidebarLink href="/dashboard" label="Dashboard" icon="home" active={pathname === "/dashboard"} />
+            <SidebarLink href="/ingredients" label="Ingredients" icon="bowl" active={pathname === "/ingredients"} />
+            <SidebarLink href="/recipes" label="Recipes" icon="book" active={pathname === "/recipes"} />
+            <SidebarLink href="/planner" label="Meal Planner" icon="calendar" active={pathname === "/planner"} />
+            <SidebarLink href="/submit" label="Submit Recipe" icon="plus" active={pathname === "/submit"} />
+            <SidebarLink href="/forum" label="Recipe Forum" icon="chat" active={pathname === "/forum"} />
+            <SidebarLink href="/account" label="Account" icon="user" active={pathname === "/account"} />
             </ul>
           </nav>
 
