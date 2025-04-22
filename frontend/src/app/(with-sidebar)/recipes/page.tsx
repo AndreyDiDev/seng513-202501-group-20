@@ -68,7 +68,8 @@ export default function RecipesPage() {
         const res = await fetch("http://localhost:5003/api/comment", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            credentials: "include"
           },
           body: JSON.stringify({
             commentText: newThreadContent,
@@ -84,7 +85,6 @@ export default function RecipesPage() {
         setNewThreadContent("")
       } catch (error) {
         console.error("Error posting comment:", error)
-        alert("Something went wrong.")
       }
 
       alert("Thread created successfully!")

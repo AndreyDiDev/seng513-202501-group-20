@@ -29,7 +29,7 @@ export default function ForumPage () {
         const res = await fetch("http://localhost:5003/api/comment", {
           method: 'GET',
           credentials: 'include'
-        }) // Update to match your actual backend URL
+        }) 
         const data = await res.json()
         console.log(data)
         setThreads(data)
@@ -52,25 +52,6 @@ export default function ForumPage () {
       return matchesSearch
     })
     
-
-  // // Handle new thread submission
-  // const handleSubmitNewThread = (e: React.FormEvent) => {
-  //   e.preventDefault()
-
-  //   if (!newThreadTitle.trim() || !newThreadContent.trim()) {
-  //     alert("Please fill in all required fields")
-  //     return
-  //   }
-
-  //   // TODO: submit this to API
-  //   alert("Thread created successfully!")
-
-  //   // Reset form and close it
-  //   setNewThreadTitle("")
-  //   setNewThreadCategory("general")
-  //   setNewThreadContent("")
-  //   setShowNewThreadForm(false)
-  // }
 
   return (
     <>
@@ -225,14 +206,6 @@ export default function ForumPage () {
                     </div>
                   </div>
                   <p className="mt-3 text-sm text-gray-300">{thread.comment}</p>
-                  {/* <div className="mt-3 flex justify-between">
-                    <Link
-                      href={`/forum/thread/${thread.id}`}
-                      className="text-xs text-emerald-400 hover:text-emerald-300"
-                    >
-                      Read more →
-                    </Link>
-                  </div> */}
                 </div>
               ))}
             </div>
