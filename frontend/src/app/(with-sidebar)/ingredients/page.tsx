@@ -105,18 +105,18 @@ export default function IngredientsPage() {
       .then((res) => res.json())
       .then((data) => {
 
-        console.log("data " + data)
+        console.log("data ", data.Ingredients)
         
         // Convert the fetched recipes
         const parsedRecipes = data.map((recipe: any) => ({
           id: recipe.id,
           title: recipe.title,
-          ingredients: recipe.ingredients || [],
+          Ingredients: recipe.Ingredients?.map((ing: any) => ing.name) || [], // map to string[]
           instructions: recipe.instructions || "",
           tags: [],
         }))
 
-        console.log(parsedRecipes)
+        console.log("ingreidnets", parsedRecipes)
 
         // Set matchingRecipes
         setMatchingRecipes(parsedRecipes)
@@ -169,10 +169,10 @@ export default function IngredientsPage() {
 
   // View recipe details
   const viewRecipeDetails = (recipe: (typeof Recipe)[0]) => {
-    console.log("here" + recipe.ingredients)
+    console.log("here", recipe.Ingredients)
     const encodedRecipe = encodeURIComponent(JSON.stringify({
       ...recipe,
-      ingredients: recipe.ingredients.map(String), // just to be safe
+      Ingredients: recipe.Ingredients.map(String),
     }))
     router.push(`/recipes?data=${encodedRecipe}`)
   }

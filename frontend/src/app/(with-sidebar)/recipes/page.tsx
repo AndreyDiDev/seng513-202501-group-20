@@ -10,7 +10,7 @@ interface Recipe {
   id: number
   title: string
   instructions: string
-  ingredients: string[]
+  Ingredients: string[]
   tags: string[]
   rating?: number
   prepTime?: string
@@ -117,44 +117,40 @@ export default function RecipesPage() {
     const fetchRecipes = async () => {
       try {
         const res = await fetch("http://localhost:5003/api/recipe/all", {
-          method: 'GET',
-          credentials: 'include',
-        })
+          method: "GET",
+          credentials: "include",
+        });
         if (!res.ok) {
-          throw new Error("Failed to fetch recipes")
+          throw new Error("Failed to fetch recipes");
         }
+        const data = await res.json();
   
-        const data = await res.json()
-  
+        // Map Ingredients array of objects to string[]
         const parsedData = data.map((recipe: any) => ({
           ...recipe,
-          ingredients: typeof recipe.ingredients === 'string'
-            ? recipe.ingredients.split(',').map((item: string) => ({ name: item.trim() }))
-            : recipe.ingredients
-        }))
+          Ingredients: recipe.Ingredients.map((ing: { name: string }) => ing.name),
+        }));
   
-        setRecipes(parsedData)
+        setRecipes(parsedData);
       } catch (err) {
-        console.error("Error loading recipes:", err)
+        console.error("Error loading recipes:", err);
       }
-    }
+    };
   
-    fetchRecipes()
-  }, [])
+    fetchRecipes();
+  }, []);
   
-
-
   const filteredRecipes = recipes
   .filter((recipe) => {
     const name = recipe.title.toLowerCase() || ""
     const instructions = recipe.instructions.toLowerCase() || ""
-    const ingredients = recipe.ingredients || []
+    const Ingredients = recipe.Ingredients || []
     const tags = recipe.tags || []
 
     const matchesSearch =
       name.includes(searchTerm.toLowerCase()) ||
       instructions.includes(searchTerm.toLowerCase()) ||
-      ingredients.some((ing) => ing?.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      Ingredients.some((ing) => ing?.toLowerCase().includes(searchTerm.toLowerCase())) ||
       tags.some((tag) => tag?.toLowerCase().includes(searchTerm.toLowerCase()))
 
     const matchesTag = activeTag === "all" || tags.includes(activeTag)
@@ -419,12 +415,9 @@ export default function RecipesPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                   <h3 className="text-md font-medium text-gray-200 mb-2">Ingredients</h3>
-                  <ul className="space-y-1 text-gray-300">
-                    {selectedRecipe?.ingredients?.map((ingredient, index) => (
-                      <li key={index} className="flex items-center">
-                        <span className="mr-2">•</span>
-                        {ingredient}
-                      </li>
+                  <ul>
+                    {(filteredRecipes.find(r => r.title === selectedRecipe.title)?.Ingredients || []).map((item, idx) => (
+                      <li key={idx}>{item.title || item}</li>
                     ))}
                   </ul>
 
