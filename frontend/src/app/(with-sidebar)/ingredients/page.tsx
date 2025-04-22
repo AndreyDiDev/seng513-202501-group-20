@@ -16,9 +16,8 @@ const mockUser = {
 
 type Recipe = {
   id: number
-  name: string
+  title: string
   ingredients: string[]
-  image?: string
   instructions?: string
   tags?: string[]
 }
@@ -111,7 +110,7 @@ export default function IngredientsPage() {
         // Convert the fetched recipes
         const parsedRecipes = data.map((recipe: any) => ({
           id: recipe.id,
-          name: recipe.title,
+          title: recipe.title,
           ingredients: recipe.ingredients || [],
           instructions: recipe.instructions || "",
           tags: [],
@@ -168,9 +167,14 @@ export default function IngredientsPage() {
     router.push("/login")
   }
 
-  // Add a function to view recipe details
+  // View recipe details
   const viewRecipeDetails = (recipe: (typeof Recipe)[0]) => {
-    setSelectedRecipe(recipe === selectedRecipe ? null : recipe)
+    console.log("here" + recipe.ingredients)
+    const encodedRecipe = encodeURIComponent(JSON.stringify({
+      ...recipe,
+      ingredients: recipe.ingredients.map(String), // just to be safe
+    }))
+    router.push(`/recipes?data=${encodedRecipe}`)
   }
 
   return (
@@ -393,7 +397,7 @@ export default function IngredientsPage() {
                       <div key={recipe.id} className="rounded-md bg-gray-700 p-4">
                         <div className="flex items-center space-x-3">
                           <div>
-                            <h3 className="font-medium text-gray-100">{recipe.name}</h3>
+                            <h3 className="font-medium text-gray-100">{recipe.title}</h3>
                             <div className="mt-1 flex flex-wrap gap-1">
                               {recipe.tags.map((tag) => (
                                 <span key={tag} className="rounded-full bg-gray-600 px-2 py-0.5 text-xs text-gray-300">

@@ -45,6 +45,22 @@ export default function RecipesPage() {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null)
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const data = params.get('data')
+
+    console.log(data)
+  
+    if (data) {
+      try {
+        const decoded = JSON.parse(decodeURIComponent(data))
+        setSelectedRecipe(decoded)
+      } catch (err) {
+        console.error('Failed to decode recipe:', err)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
     const fetchRecipes = async () => {
       try {
         const res = await fetch("http://localhost:5003/api/recipe/all", {
@@ -339,15 +355,16 @@ export default function RecipesPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <h3 className="text-md font-medium text-gray-200 mb-2">Ingredients</h3>
-                    <ul className="space-y-1 text-gray-300">
-                      {selectedRecipe.ingredients.map((ingredient, index) => (
-                        <li key={index} className="flex items-center">
-                          <span className="mr-2">•</span>
-                          {ingredient}
-                        </li>
-                      ))}
-                    </ul>
+                  <h3 className="text-md font-medium text-gray-200 mb-2">Ingredients</h3>
+                  <ul className="space-y-1 text-gray-300">
+                    {selectedRecipe?.ingredients?.map((ingredient, index) => (
+                      <li key={index} className="flex items-center">
+                        <span className="mr-2">•</span>
+                        {ingredient}
+                      </li>
+                    ))}
+                  </ul>
+
                   </div>
 
                   <div>
@@ -415,6 +432,23 @@ export default function RecipesPage() {
                         </svg>
                         Add to Meal Plan
                       </button>
+
+                      <button className="flex items-center rounded-md bg-gray-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-600">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4 mr-1"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        </svg>
+                        Post a Comment
+                      </button>
+
                     </div>
                   </div>
                 </div>
