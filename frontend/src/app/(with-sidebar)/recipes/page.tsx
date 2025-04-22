@@ -60,6 +60,7 @@ export default function RecipesPage() {
         alert("Please fill in all required fields")
         return
       }
+  
 
       console.log("Posting new thread:", newThreadContent)
       console.log("recipe id", recipeID)
@@ -67,6 +68,7 @@ export default function RecipesPage() {
       try {
         const res = await fetch("http://localhost:5003/api/comment", {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -80,11 +82,11 @@ export default function RecipesPage() {
         if (!res.ok) {
           throw new Error("Failed to post comment")
         }
-  
-        alert("Comment posted successfully!")
+
         setNewThreadContent("")
       } catch (error) {
         console.error("Error posting comment:", error)
+        alert("Failed to post comment. Please try again.")
       }
 
   

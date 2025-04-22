@@ -126,12 +126,6 @@ export default function ForumPage () {
                   <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
               </div>
-              <button
-                // onClick={() => setShowNewThreadForm(true)}
-                className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500"
-              >
-                New Thread
-              </button>
             </div>
           </header>
 
@@ -243,72 +237,6 @@ export default function ForumPage () {
             )}
           </div>
         </div>
-
-      {/* New Thread Modal */}
-      {/* {showNewThreadForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-75">
-          <div className="w-full max-w-2xl rounded-md bg-gray-800 p-6 shadow-lg">
-            <h2 className="mb-4 text-lg font-semibold text-gray-100">Create New Thread</h2>
-            <form onSubmit={handleSubmitNewThread}>
-              <div className="mb-4">
-                <label htmlFor="threadTitle" className="block text-sm font-medium text-gray-300">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  id="threadTitle"
-                  value={newThreadTitle}
-                  onChange={(e) => setNewThreadTitle(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
-                  placeholder="Enter thread title"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="threadCategory" className="block text-sm font-medium text-gray-300">
-                  Category
-                </label>
-                <select
-                  id="threadCategory"
-                  value={newThreadCategory}
-                  onChange={(e) => setNewThreadCategory(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
-                >
-                </select>
-              </div>
-              <div className="mb-4">
-                <label htmlFor="threadContent" className="block text-sm font-medium text-gray-300">
-                  Content
-                </label>
-                <textarea
-                  id="threadContent"
-                  value={newThreadContent}
-                  onChange={(e) => setNewThreadContent(e.target.value)}
-                  rows={6}
-                  className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
-                  placeholder="Enter your thread content here..."
-                  required
-                ></textarea>
-              </div>
-              <div className="flex justify-end space-x-3">
-                <button
-                  type="button"
-                  // onClick={() => setShowNewThreadForm(false)}
-                  className="rounded-md bg-gray-700 px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-600"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500"
-                >
-                  Create Thread
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )} */}
     </>
   )
 }
