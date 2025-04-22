@@ -3,7 +3,8 @@ import db from '../db/db.js';
 export const createCommentController = async (req, res) => {
     const t = await db.sequelize.transaction(); // Begin transaction
     try {
-        const { commentText, userId, recipeId} = req.body;
+        const { commentText, recipeId} = req.body;
+        const userId = req.user.id
         let name = ''
         const comment = await db.Comment.create({ name, commentText, userId, recipeId }, { transaction: t });
 

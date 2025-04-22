@@ -1,182 +1,76 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
+import { useState , useEffect} from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Head from "next/head"
 
-// User data
-const mockUser = {
-  name: "Juanito Escobar",
-  email: "escobar@example.com",
-  isPremium: false,
+interface Thread { 
+  id: number
+  recipeTitle: string
+  recipiePoster: string
+  comment: string
 }
 
-// Forum categories
-const forumCategories = [
-  { id: "general", name: "General Discussion", count: 24 },
-  { id: "recipes", name: "Recipe Sharing", count: 47 },
-  { id: "techniques", name: "Cooking Techniques", count: 18 },
-  { id: "ingredients", name: "Ingredient Substitutions", count: 31 },
-  { id: "equipment", name: "Kitchen Equipment", count: 12 },
-]
 
-// Forum threads
-const mockThreads = [
-  {
-    id: 1,
-    title: "What's your favorite quick weeknight dinner?",
-    author: "CookingEnthusiast",
-    category: "recipes",
-    replies: 28,
-    views: 342,
-    lastActivity: "2 hours ago",
-    isPinned: true,
-    excerpt: "Looking for some inspiration for quick meals that can be prepared in under 30 minutes...",
-  },
-  {
-    id: 2,
-    title: "Best way to sharpen kitchen knives?",
-    author: "ChefMike",
-    category: "equipment",
-    replies: 15,
-    views: 187,
-    lastActivity: "5 hours ago",
-    isPinned: false,
-    excerpt: "I've been using a whetstone but I'm not sure if I'm doing it correctly. Any tips or recommendations?",
-  },
-  {
-    id: 3,
-    title: "Vegetarian alternatives to chicken in stir fry",
-    author: "VeggieLover",
-    category: "ingredients",
-    replies: 32,
-    views: 410,
-    lastActivity: "Yesterday",
-    isPinned: false,
-    excerpt:
-      "I'm trying to reduce my meat consumption and looking for good alternatives to chicken in stir fry dishes...",
-  },
-  {
-    id: 4,
-    title: "How to properly caramelize onions?",
-    author: "SousChef",
-    category: "techniques",
-    replies: 19,
-    views: 256,
-    lastActivity: "2 days ago",
-    isPinned: false,
-    excerpt: "Every time I try to caramelize onions, they either burn or don't get that deep brown color...",
-  },
-  {
-    id: 5,
-    title: "Introduce yourself to the community!",
-    author: "Admin",
-    category: "general",
-    replies: 124,
-    views: 1520,
-    lastActivity: "3 days ago",
-    isPinned: true,
-    excerpt: "Welcome to our cooking community! Tell us a bit about yourself and your cooking journey...",
-  },
-  {
-    id: 6,
-    title: "Tips for meal prepping on a budget",
-    author: "FrugalFoodie",
-    category: "general",
-    replies: 45,
-    views: 678,
-    lastActivity: "4 days ago",
-    isPinned: false,
-    excerpt: "I'm trying to save money while still eating healthy. Any tips for affordable meal prepping?",
-  },
-]
-
-export default function ForumPage() {
+export default function ForumPage () {
   const router = useRouter()
+  const [threads, setThreads] = useState([])
+  const [loading, setLoading] = useState(true)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeCategory, setActiveCategory] = useState("all")
   const [searchTerm, setSearchTerm] = useState("")
-  const [sortBy, setSortBy] = useState("recent") // recent, popular, replies
-  const [isPremium, setIsPremium] = useState(mockUser.isPremium)
-  const [isUpgrading, setIsUpgrading] = useState(false)
-  const [showNewThreadForm, setShowNewThreadForm] = useState(false)
-  const [newThreadTitle, setNewThreadTitle] = useState("")
-  const [newThreadCategory, setNewThreadCategory] = useState("general")
-  const [newThreadContent, setNewThreadContent] = useState("")
+  const [sortBy, setSortBy] = useState("recent")
+
+  useEffect(() => {
+    const fetchThreads = async () => {
+      try {
+        const res = await fetch("http://localhost:5003/api/comment", {
+          method: 'GET',
+          credentials: 'include'
+        }) // Update to match your actual backend URL
+        const data = await res.json()
+        console.log(data)
+        setThreads(data)
+      } catch (err) {
+        console.error("Error fetching threads:", err)
+      } 
+    }
+
+    fetchThreads()
+  }, [])
 
   // Filter and sort threads
-  const filteredThreads = mockThreads
-    .filter((thread) => {
-      // Filter by category
-      const matchesCategory = activeCategory === "all" || thread.category === activeCategory
+  const filteredThreads = threads.filter((thread: Thread) => {
 
       // Filter by search term
       const matchesSearch =
-        thread.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        thread.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
+        thread.recipeTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        thread.comment.toLowerCase().includes(searchTerm.toLowerCase())
 
-      return matchesCategory && matchesSearch
+      return matchesSearch
     })
-    .sort((a, b) => {
-      // Always show pinned threads first
-      if (a.isPinned && !b.isPinned) return -1
-      if (!a.isPinned && b.isPinned) return 1
+    
 
-      // Then sort by selected criteria
-      if (sortBy === "recent") {
-        return a.id < b.id ? 1 : -1
-      } else if (sortBy === "popular") {
-        return b.views - a.views
-      } else {
-        return b.replies - a.replies
-      }
-    })
+  // // Handle new thread submission
+  // const handleSubmitNewThread = (e: React.FormEvent) => {
+  //   e.preventDefault()
 
-  // Handle premium upgrade
-  const handleUpgradeToPremium = async () => {
-    setIsUpgrading(true)
+  //   if (!newThreadTitle.trim() || !newThreadContent.trim()) {
+  //     alert("Please fill in all required fields")
+  //     return
+  //   }
 
-    try {
-      // API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+  //   // TODO: submit this to API
+  //   alert("Thread created successfully!")
 
-      // Success - update premium status
-      setIsPremium(true)
-      alert("Upgrade successful! You now have premium access.")
-    } catch (error) {
-      console.error("Error upgrading to premium:", error)
-      alert("There was an error processing your upgrade. Please try again.")
-    } finally {
-      setIsUpgrading(false)
-    }
-  }
-
-  // Handle new thread submission
-  const handleSubmitNewThread = (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!newThreadTitle.trim() || !newThreadContent.trim()) {
-      alert("Please fill in all required fields")
-      return
-    }
-
-    // TODO: submit this to API
-    alert("Thread created successfully!")
-
-    // Reset form and close it
-    setNewThreadTitle("")
-    setNewThreadCategory("general")
-    setNewThreadContent("")
-    setShowNewThreadForm(false)
-  }
-
-  // Logout function
-  const handleLogout = () => {
-    router.push("/login")
-  }
+  //   // Reset form and close it
+  //   setNewThreadTitle("")
+  //   setNewThreadCategory("general")
+  //   setNewThreadContent("")
+  //   setShowNewThreadForm(false)
+  // }
 
   return (
     <>
@@ -252,7 +146,7 @@ export default function ForumPage() {
                 </svg>
               </div>
               <button
-                onClick={() => setShowNewThreadForm(true)}
+                // onClick={() => setShowNewThreadForm(true)}
                 className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500"
               >
                 New Thread
@@ -272,19 +166,6 @@ export default function ForumPage() {
               >
                 All Categories
               </button>
-              {forumCategories.map((category) => (
-                <button
-                  key={category.id}
-                  onClick={() => setActiveCategory(category.id)}
-                  className={`rounded-full px-4 py-1 text-sm font-medium ${
-                    activeCategory === category.id
-                      ? "bg-emerald-600 text-white"
-                      : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                  }`}
-                >
-                  {category.name} ({category.count})
-                </button>
-              ))}
             </div>
 
             {/* Sort options */}
@@ -326,9 +207,7 @@ export default function ForumPage() {
               {filteredThreads.map((thread) => (
                 <div
                   key={thread.id}
-                  className={`rounded-lg ${
-                    thread.isPinned ? "bg-gray-700/50 border border-emerald-600/30" : "bg-gray-800"
-                  } p-4 shadow-md`}
+                  className={`rounded-lg bg-gray-800 p-4 shadow-md`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start space-x-3">
@@ -337,88 +216,23 @@ export default function ForumPage() {
                           href={`/forum/thread/${thread.id}`}
                           className="text-lg font-medium text-gray-100 hover:text-emerald-400"
                         >
-                          {thread.title}
+                          {thread.recipeTitle}
                         </Link>
                         <div className="mt-1 flex items-center space-x-2 text-xs text-gray-400">
-                          <span>By {thread.author}</span>
-                          <span>•</span>
-                          <span>{thread.lastActivity}</span>
-                          {thread.isPinned && (
-                            <>
-                              <span>•</span>
-                              <span className="flex items-center text-emerald-400">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="24"
-                                  height="24"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  className="mr-1 h-3 w-3"
-                                >
-                                  <line x1="12" x2="12" y1="17" y2="22" />
-                                  <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z" />
-                                </svg>
-                                Pinned
-                              </span>
-                            </>
-                          )}
+                          <span>By {thread.recipePoster}</span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-col items-end text-xs text-gray-400">
-                      <div className="flex items-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="mr-1 h-3 w-3"
-                        >
-                          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                        </svg>
-                        {thread.replies} replies
-                      </div>
-                      <div className="flex items-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="mr-1 h-3 w-3"
-                        >
-                          <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-                          <circle cx="12" cy="12" r="3" />
-                        </svg>
-                        {thread.views} views
-                      </div>
-                    </div>
                   </div>
-                  <p className="mt-3 text-sm text-gray-300">{thread.excerpt}</p>
-                  <div className="mt-3 flex justify-between">
-                    <span className="rounded-full bg-gray-700 px-2 py-0.5 text-xs text-gray-300">
-                      {forumCategories.find((cat) => cat.id === thread.category)?.name || thread.category}
-                    </span>
+                  <p className="mt-3 text-sm text-gray-300">{thread.comment}</p>
+                  {/* <div className="mt-3 flex justify-between">
                     <Link
                       href={`/forum/thread/${thread.id}`}
                       className="text-xs text-emerald-400 hover:text-emerald-300"
                     >
                       Read more →
                     </Link>
-                  </div>
+                  </div> */}
                 </div>
               ))}
             </div>
@@ -458,7 +272,7 @@ export default function ForumPage() {
         </div>
 
       {/* New Thread Modal */}
-      {showNewThreadForm && (
+      {/* {showNewThreadForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-75">
           <div className="w-full max-w-2xl rounded-md bg-gray-800 p-6 shadow-lg">
             <h2 className="mb-4 text-lg font-semibold text-gray-100">Create New Thread</h2>
@@ -487,11 +301,6 @@ export default function ForumPage() {
                   onChange={(e) => setNewThreadCategory(e.target.value)}
                   className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
                 >
-                  {forumCategories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
                 </select>
               </div>
               <div className="mb-4">
@@ -511,7 +320,7 @@ export default function ForumPage() {
               <div className="flex justify-end space-x-3">
                 <button
                   type="button"
-                  onClick={() => setShowNewThreadForm(false)}
+                  // onClick={() => setShowNewThreadForm(false)}
                   className="rounded-md bg-gray-700 px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-600"
                 >
                   Cancel
@@ -526,7 +335,7 @@ export default function ForumPage() {
             </form>
           </div>
         </div>
-      )}
+      )} */}
     </>
   )
 }
