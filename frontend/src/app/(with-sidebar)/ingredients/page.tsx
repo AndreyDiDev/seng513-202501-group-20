@@ -425,53 +425,7 @@ export default function IngredientsPage() {
                 )}
               </div>
 
-              {selectedRecipe && (
-                <div className="rounded-lg bg-gray-800 p-6 shadow-lg">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-lg font-medium text-gray-100">{selectedRecipe.name}</h2>
-                    <button onClick={() => setSelectedRecipe(null)} className="text-gray-400 hover:text-gray-300">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="h-5 w-5"
-                      >
-                        <line x1="18" x2="6" y1="6" y2="18" />
-                        <line x1="6" x2="18" y1="6" y2="18" />
-                      </svg>
-                    </button>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-300 mb-2">Instructions</h3>
-                      <p className="text-gray-400">
-                        {selectedRecipe.instructions || "No instructions available."}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 pt-4 border-t border-gray-700">
-                    <button
-                      onClick={() => {
-                        alert(`Added ${selectedRecipe.name} to your meal plan!`)
-                      }}
-                      className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-800"
-                    >
-                      Add to Meal Plan
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Add new ingredient form - now at the bottom */}
+              {/* Add new ingredient form */}
               <div className="rounded-lg bg-gray-800 p-6 shadow-lg">
                 <h2 className="mb-4 text-lg font-medium text-gray-100">Add New Ingredient</h2>
                 <form onSubmit={handleAddIngredient} className="space-y-4">

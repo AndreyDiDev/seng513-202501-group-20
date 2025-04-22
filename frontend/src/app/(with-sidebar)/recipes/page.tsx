@@ -123,15 +123,25 @@ export default function RecipesPage() {
         if (!res.ok) {
           throw new Error("Failed to fetch recipes")
         }
+  
         const data = await res.json()
-        setRecipes(data)
+  
+        const parsedData = data.map((recipe: any) => ({
+          ...recipe,
+          ingredients: typeof recipe.ingredients === 'string'
+            ? recipe.ingredients.split(',').map((item: string) => ({ name: item.trim() }))
+            : recipe.ingredients
+        }))
+  
+        setRecipes(parsedData)
       } catch (err) {
         console.error("Error loading recipes:", err)
       }
     }
-
+  
     fetchRecipes()
   }, [])
+  
 
 
   const filteredRecipes = recipes

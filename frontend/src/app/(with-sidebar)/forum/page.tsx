@@ -50,7 +50,7 @@ export default function ForumPage () {
         thread.comment.toLowerCase().includes(searchTerm.toLowerCase())
 
       return matchesSearch
-    })
+    }).reverse() // Reverse the order to show the most recent first
     
 
   return (
@@ -178,30 +178,32 @@ export default function ForumPage () {
             </div>
 
             {/* Thread list */}
-            <div className="space-y-4">
-              {filteredThreads.map((thread) => (
-                <div
-                  key={thread.id}
-                  className={`rounded-lg bg-gray-800 p-4 shadow-md`}
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start space-x-3">
-                      <div>
-                        <Link
-                          href={`/forum/thread/${thread.id}`}
-                          className="text-lg font-medium text-gray-100 hover:text-emerald-400"
-                        >
-                          {thread.recipeTitle}
-                        </Link>
-                        <div className="mt-1 flex items-center space-x-2 text-xs text-gray-400">
-                          <span>By {thread.recipePoster}</span>
+            <div className="h-[calc(100vh-16rem)] overflow-y-auto pr-2">
+              <div className="space-y-4">
+                {filteredThreads.map((thread) => (
+                  <div
+                    key={thread.id}
+                    className={`rounded-lg bg-gray-800 p-4 shadow-md`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start space-x-3">
+                        <div>
+                          <Link
+                            href={`/forum/thread/${thread.id}`}
+                            className="text-lg font-medium text-gray-100 hover:text-emerald-400"
+                          >
+                            {thread.recipeTitle}
+                          </Link>
+                          <div className="mt-1 flex items-center space-x-2 text-xs text-gray-400">
+                            <span>By {thread.recipePoster}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
+                    <p className="mt-3 text-sm text-gray-300">{thread.comment}</p>
                   </div>
-                  <p className="mt-3 text-sm text-gray-300">{thread.comment}</p>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
             {filteredThreads.length === 0 && (

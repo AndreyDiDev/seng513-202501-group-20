@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter , usePathname} from "next/navigation"
 import { useUser } from "../context/UserContext"
+import { useEffect } from "react"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -118,7 +119,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Mobile Header */}
         <div className="lg:hidden fixed top-0 left-0 right-0 z-30 flex h-16 items-center bg-gray-800 px-4 shadow-md">
           <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            onClick={() => {
+              setIsMobileMenuOpen(!isMobileMenuOpen);
+            }}
+            
             className="rounded-md p-2 text-gray-300 hover:bg-gray-700"
           >
             <svg
@@ -140,8 +144,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </main>
       </div>
     </div>
-
-    
   )
 }
 
