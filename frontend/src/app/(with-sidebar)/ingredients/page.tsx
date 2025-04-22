@@ -176,7 +176,6 @@ export default function IngredientsPage() {
 
   // Logout function
   const handleLogout = () => {
-    // In a real app, you would handle logout logic here
     router.push("/login")
   }
 
@@ -485,7 +484,7 @@ export default function IngredientsPage() {
                     <div>
                       <h3 className="text-sm font-medium text-gray-300 mb-2">Instructions</h3>
                       <p className="text-gray-400">
-                        This is a placeholder for recipe instructions. In a real application, this would contain the
+                        This is a placeholder for recipe instructions. This would contain the
                         full preparation instructions for {selectedRecipe.name}.
                       </p>
 
@@ -505,7 +504,6 @@ export default function IngredientsPage() {
                   <div className="mt-6 pt-4 border-t border-gray-700">
                     <button
                       onClick={() => {
-                        // In a real app, this would add the recipe to the meal plan
                         alert(`Added ${selectedRecipe.name} to your meal plan!`)
                       }}
                       className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-800"

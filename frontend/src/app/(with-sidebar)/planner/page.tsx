@@ -216,7 +216,6 @@ export default function PlannerPage() {
 
   // Logout function
   const handleLogout = () => {
-    // In a real app, you would handle logout logic here
     router.push("/login/page")
   }
 

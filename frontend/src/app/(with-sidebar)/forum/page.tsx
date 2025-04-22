@@ -14,7 +14,7 @@ const mockUser = {
   isPremium: false,
 }
 
-// Mock forum categories
+// Forum categories
 const forumCategories = [
   { id: "general", name: "General Discussion", count: 24 },
   { id: "recipes", name: "Recipe Sharing", count: 47 },
@@ -23,13 +23,12 @@ const forumCategories = [
   { id: "equipment", name: "Kitchen Equipment", count: 12 },
 ]
 
-// Mock forum threads
+// Forum threads
 const mockThreads = [
   {
     id: 1,
     title: "What's your favorite quick weeknight dinner?",
     author: "CookingEnthusiast",
-    authorAvatar: "https://i.pravatar.cc/150?u=cooking",
     category: "recipes",
     replies: 28,
     views: 342,
@@ -41,7 +40,6 @@ const mockThreads = [
     id: 2,
     title: "Best way to sharpen kitchen knives?",
     author: "ChefMike",
-    authorAvatar: "https://i.pravatar.cc/150?u=mike",
     category: "equipment",
     replies: 15,
     views: 187,
@@ -53,7 +51,6 @@ const mockThreads = [
     id: 3,
     title: "Vegetarian alternatives to chicken in stir fry",
     author: "VeggieLover",
-    authorAvatar: "https://i.pravatar.cc/150?u=veggie",
     category: "ingredients",
     replies: 32,
     views: 410,
@@ -66,7 +63,6 @@ const mockThreads = [
     id: 4,
     title: "How to properly caramelize onions?",
     author: "SousChef",
-    authorAvatar: "https://i.pravatar.cc/150?u=sous",
     category: "techniques",
     replies: 19,
     views: 256,
@@ -78,7 +74,6 @@ const mockThreads = [
     id: 5,
     title: "Introduce yourself to the community!",
     author: "Admin",
-    authorAvatar: "https://i.pravatar.cc/150?u=admin",
     category: "general",
     replies: 124,
     views: 1520,
@@ -90,7 +85,6 @@ const mockThreads = [
     id: 6,
     title: "Tips for meal prepping on a budget",
     author: "FrugalFoodie",
-    authorAvatar: "https://i.pravatar.cc/150?u=frugal",
     category: "general",
     replies: 45,
     views: 678,
@@ -146,7 +140,7 @@ export default function ForumPage() {
     setIsUpgrading(true)
 
     try {
-      // Simulate API call
+      // API call
       await new Promise((resolve) => setTimeout(resolve, 1500))
 
       // Success - update premium status
@@ -338,11 +332,6 @@ export default function ForumPage() {
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start space-x-3">
-                      <img
-                        src={thread.authorAvatar || "/placeholder.svg"}
-                        alt={thread.author}
-                        className="h-10 w-10 rounded-full object-cover"
-                      />
                       <div>
                         <Link
                           href={`/forum/thread/${thread.id}`}

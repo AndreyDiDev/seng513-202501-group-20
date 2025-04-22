@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation"
 const mockUser = {
     name: "Admin User",
     email: "admin@example.com",
-    avatar: "https://i.pravatar.cc/150?u=admin",
     isPremium: true,
     isAdmin: true,
     }
@@ -28,13 +27,13 @@ const mockUser = {
     activeUsers: 876,
     totalMeals: 5432,
     totalIngredients: 1876,
-    totalComments: 3245,
+    totalthreads: 3245,
     }
 
     // Mock recent activities
     const mockActivities = [
     { id: 1, user: "Sarah Williams", action: "Generated a new meal", time: "2 minutes ago" },
-    { id: 2, user: "Michael Brown", action: "Added a comment", time: "15 minutes ago" },
+    { id: 2, user: "Michael Brown", action: "Added a thread", time: "15 minutes ago" },
     { id: 3, user: "Emily Davis", action: "Saved a meal", time: "1 hour ago" },
     { id: 4, user: "Alex Johnson", action: "Added new ingredients", time: "3 hours ago" },
     { id: 5, user: "Admin User", action: "Updated system settings", time: "5 hours ago" },
@@ -80,8 +79,8 @@ const mockUser = {
     },
     ]
 
-    // Mock comments
-    const mockComments = [
+    // Mock threads
+    const mockthreads = [
     {
         id: 1,
         mealId: 1,
@@ -121,22 +120,41 @@ const mockUser = {
 ]
 
 export default function AdminPanel() {
-    // TODO: 
     const router = useRouter()
     const [activeTab, setActiveTab] = useState("dashboard")
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
     const [filteredUsers, setFilteredUsers] = useState(mockUsers)
-    const [recipes, setRecipes] = useState(mockRecipes)
-    const [comments, setComments] = useState(mockComments)
+    const [recipes, setRecipes] = useState([])
+    const [threads, setthreads] = useState(mockthreads)
     const [users, setUsers] = useState(mockUsers)
     const [recipeSearchQuery, setRecipeSearchQuery] = useState("")
-    const [commentSearchQuery, setCommentSearchQuery] = useState("")
+    const [threadsearchQuery, setthreadsearchQuery] = useState("")
     const [filteredRecipes, setFilteredRecipes] = useState(mockRecipes)
-    const [filteredComments, setFilteredComments] = useState(mockComments)
+    const [filteredthreads, setFilteredthreads] = useState(mockthreads)
     const [showDeleteModal, setShowDeleteModal] = useState(false)
-    const [deleteItemType, setDeleteItemType] = useState<"recipe" | "comment" | "user" | null>(null)
+    const [deleteItemType, setDeleteItemType] = useState<"recipe" | "thread" | "user" | null>(null)
     const [deleteItemId, setDeleteItemId] = useState<number | null>(null)
+
+    useEffect(() => {
+        const fetchRecipes = async () => {
+          try {
+            const res = await fetch("http://localhost:5003/api/recipe/all", {
+              method: 'GET',
+              credentials: 'include',
+            })
+            if (!res.ok) {
+              throw new Error("Failed to fetch recipes")
+            }
+            const data = await res.json()
+            setRecipes(data)
+          } catch (err) {
+            console.error("Error loading recipes:", err)
+          }
+        }
+    
+        fetchRecipes()
+      }, [])
 
     // Close mobile menu when screen size changes
     useEffect(() => {
@@ -176,22 +194,22 @@ useEffect(() => {
     }
 }, [recipeSearchQuery, recipes])
 
-// Filter comments based on search query
+// Filter threads based on search query
 useEffect(() => {
-    if (commentSearchQuery) {
-    const query = commentSearchQuery.toLowerCase()
-    setFilteredComments(
-        comments.filter(
-        (comment) =>
-            comment.mealName.toLowerCase().includes(query) ||
-            comment.userName.toLowerCase().includes(query) ||
-            comment.text.toLowerCase().includes(query),
+    if (threadsearchQuery) {
+    const query = threadsearchQuery.toLowerCase()
+    setFilteredthreads(
+        threads.filter(
+        (thread) =>
+            thread.mealName.toLowerCase().includes(query) ||
+            thread.userName.toLowerCase().includes(query) ||
+            thread.text.toLowerCase().includes(query),
         ),
     )
     } else {
-    setFilteredComments(comments)
+    setFilteredthreads(threads)
     }
-}, [commentSearchQuery, comments])
+}, [threadsearchQuery, threads])
 
 // Toggle user status
 const toggleUserStatus = (userId: number) => {
@@ -227,8 +245,8 @@ const formatDate = (date: Date) => {
 const handleDeleteConfirm = () => {
     if (deleteItemType === "recipe" && deleteItemId) {
     setRecipes(recipes.filter((recipe) => recipe.id !== deleteItemId))
-    } else if (deleteItemType === "comment" && deleteItemId) {
-    setComments(comments.filter((comment) => comment.id !== deleteItemId))
+    } else if (deleteItemType === "thread" && deleteItemId) {
+    setthreads(threads.filter((thread) => thread.id !== deleteItemId))
     } else if (deleteItemType === "user" && deleteItemId) {
     setUsers(users.filter((user) => user.id !== deleteItemId))
     }
@@ -238,7 +256,7 @@ const handleDeleteConfirm = () => {
 }
 
 // Show delete confirmation modal
-const showDeleteConfirmation = (type: "recipe" | "comment" | "user", id: number) => {
+const showDeleteConfirmation = (type: "recipe" | "thread" | "user", id: number) => {
     setDeleteItemType(type)
     setDeleteItemId(id)
     setShowDeleteModal(true)
@@ -246,8 +264,7 @@ const showDeleteConfirmation = (type: "recipe" | "comment" | "user", id: number)
 
 // Logout function
 const handleLogout = () => {
-    // TODO: logout logic here
-    router.push("/admin/login")
+    router.push("/adminlogin")
 }
 
 return (
@@ -266,7 +283,7 @@ return (
             <h3 className="text-lg font-medium text-gray-100">Confirm Deletion</h3>
             <p className="mt-2 text-sm text-gray-300">
             {deleteItemType === "recipe" && "Are you sure you want to delete this recipe?"}
-            {deleteItemType === "comment" && "Are you sure you want to delete this comment?"}
+            {deleteItemType === "thread" && "Are you sure you want to delete this thread?"}
             {deleteItemType === "user" && "Are you sure you want to delete this user?"}
             {" This action cannot be undone."}
             </p>
@@ -327,7 +344,6 @@ return (
             />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <span className="ml-2 text-lg font-bold text-gray-100">Admin Panel</span>
         </div>
         </div>
 
@@ -366,35 +382,16 @@ return (
                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                 />
                 </svg>
-                <span className="ml-2 text-lg font-bold text-gray-100">Admin Panel</span>
+                <span className="ml-2 text-lg font-bold text-gray-100">Admin Dashboard</span>
             </div>
             </div>
 
             {/* User profile */}
             <div className="border-b border-gray-700 px-6 py-4">
             <div className="flex items-center">
-                <img
-                src={mockUser.avatar || "/placeholder.svg?height=40&width=40"}
-                alt="User avatar"
-                className="h-10 w-10 rounded-full object-cover"
-                onError={(e) => {
-                    const target = e.target as HTMLImageElement
-                    target.src = "/placeholder.svg?height=40&width=40"
-                }}
-                />
                 <div className="ml-3">
                 <div className="flex items-center">
                     <p className="text-sm font-medium text-gray-100">{mockUser.name}</p>
-                    {mockUser.isPremium && (
-                    <span className="ml-2 rounded-full bg-yellow-900/30 px-2 py-0.5 text-xs font-medium text-yellow-300">
-                        Premium
-                    </span>
-                    )}
-                    {mockUser.isAdmin && (
-                    <span className="ml-2 rounded-full bg-red-900/30 px-2 py-0.5 text-xs font-medium text-red-300">
-                        Admin
-                    </span>
-                    )}
                 </div>
                 <p className="text-xs text-gray-400">{mockUser.email}</p>
                 </div>
@@ -465,11 +462,11 @@ return (
                 <li>
                 <button
                     onClick={() => {
-                    setActiveTab("comments")
+                    setActiveTab("threads")
                     setIsMobileMenuOpen(false)
                     }}
                     className={`flex w-full items-center rounded-md px-4 py-2 text-sm font-medium ${
-                    activeTab === "comments"
+                    activeTab === "threads"
                         ? "bg-gray-700 text-red-400"
                         : "text-gray-300 hover:bg-gray-700 hover:text-gray-100"
                     }`}
@@ -488,7 +485,7 @@ return (
                         d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
                     />
                     </svg>
-                    Comments
+                    Threads
                 </button>
                 </li>
                 <li>
@@ -612,11 +609,10 @@ return (
         {/* Content header */}
         <header className="flex h-16 items-center justify-between border-b border-gray-700 bg-gray-800 px-4 sm:px-6">
             <h1 className="text-lg font-semibold text-gray-100">
-            {activeTab === "dashboard" && "Admin Dashboard"}
             {activeTab === "recipes" && "Recipe Management"}
-            {activeTab === "comments" && "Comment Management"}
+            {activeTab === "threads" && "Thread Management"}
             {activeTab === "users" && "User Management"}
-            {activeTab === "settings" && "System Settings"}
+            {activeTab === "settings" && "Settings"}
             </h1>
             <div>
             {activeTab === "users" && (
@@ -641,13 +637,13 @@ return (
                 />
                 </div>
             )}
-            {activeTab === "comments" && (
+            {activeTab === "threads" && (
                 <div className="relative">
                 <input
                     type="text"
-                    placeholder="Search comments..."
-                    value={commentSearchQuery}
-                    onChange={(e) => setCommentSearchQuery(e.target.value)}
+                    placeholder="Search threads..."
+                    value={threadsearchQuery}
+                    onChange={(e) => setthreadsearchQuery(e.target.value)}
                     className="w-full rounded-md bg-gray-700 border-gray-600 px-3 py-2 text-sm placeholder-gray-400 text-gray-100 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
                 />
                 </div>
@@ -657,189 +653,135 @@ return (
 
         {/* Content body */}
         <main className="flex-1 overflow-y-auto bg-gray-900 p-4 sm:p-6">
-            {/* Dashboard tab */}
             {activeTab === "dashboard" && (
-            <div className="space-y-6">
-                {/* Stats cards */}
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <div className="rounded-lg bg-gray-800 p-4 shadow border border-gray-700">
+                <div className="flex flex-col h-full justify-start space-y-6">
+                {/* Greeting */}
+                <div>
+                    <h1 className="text-3xl font-bold text-white">Welcome, Admin!</h1>
+                    <p className="text-gray-400 text-sm mt-1">Here's my report...</p>
+                </div>
+
+                {/* Stats Cards */}
+                <div className="flex-1 grid grid-cols-1 gap-6">
+                    {/* Total Users Card */}
+                    <div className="rounded-2xl bg-gray-800 p-6 shadow border border-gray-700 w-full h-full">
                     <div className="flex items-center">
-                    <div className="rounded-md bg-red-900/30 p-3">
+                        <div className="rounded-md bg-red-900/30 p-3">
                         <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6 text-red-400"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 text-red-400"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
                         >
-                        <path
+                            <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}
                             d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                        />
+                            />
                         </svg>
-                    </div>
-                    <div className="ml-4">
+                        </div>
+                        <div className="ml-4">
                         <h3 className="text-sm font-medium text-gray-400">Total Users</h3>
                         <p className="text-2xl font-bold text-gray-100">{mockStats.totalUsers}</p>
-                    </div>
+                        </div>
                     </div>
                     <div className="mt-4">
-                    <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-400">Premium Users</span>
                         <span className="font-medium text-yellow-300">{mockStats.premiumUsers}</span>
-                    </div>
-                    <div className="mt-1 h-2 w-full rounded-full bg-gray-700">
+                        </div>
+                        <div className="mt-1 h-2 w-full rounded-full bg-gray-700">
                         <div
-                        className="h-2 rounded-full bg-yellow-500"
-                        style={{ width: `${(mockStats.premiumUsers / mockStats.totalUsers) * 100}%` }}
+                            className="h-2 rounded-full bg-yellow-500"
+                            style={{ width: `${(mockStats.premiumUsers / mockStats.totalUsers) * 100}%` }}
                         ></div>
+                        </div>
                     </div>
                     </div>
-                </div>
 
-                <div className="rounded-lg bg-gray-800 p-4 shadow border border-gray-700">
+                    {/* Total Meals Card */}
+                    <div className="rounded-2xl bg-gray-800 p-6 shadow border border-gray-700 w-full h-full">
                     <div className="flex items-center">
-                    <div className="rounded-md bg-emerald-900/30 p-3">
+                        <div className="rounded-md bg-emerald-900/30 p-3">
                         <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6 text-emerald-400"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 text-emerald-400"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
                         >
-                        <path
+                            <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}
                             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                        />
+                            />
                         </svg>
-                    </div>
-                    <div className="ml-4">
+                        </div>
+                        <div className="ml-4">
                         <h3 className="text-sm font-medium text-gray-400">Total Meals</h3>
                         <p className="text-2xl font-bold text-gray-100">{mockStats.totalMeals}</p>
-                    </div>
+                        </div>
                     </div>
                     <div className="mt-4">
-                    <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-400">Ingredients</span>
                         <span className="font-medium text-emerald-300">{mockStats.totalIngredients}</span>
-                    </div>
-                    <div className="mt-1 h-2 w-full rounded-full bg-gray-700">
+                        </div>
+                        <div className="mt-1 h-2 w-full rounded-full bg-gray-700">
                         <div className="h-2 rounded-full bg-emerald-500" style={{ width: "65%" }}></div>
+                        </div>
                     </div>
                     </div>
-                </div>
 
-                <div className="rounded-lg bg-gray-800 p-4 shadow border border-gray-700">
+                    {/* Total threads Card */}
+                    <div className="rounded-2xl bg-gray-800 p-6 shadow border border-gray-700 w-full h-full">
                     <div className="flex items-center">
-                    <div className="rounded-md bg-blue-900/30 p-3">
+                        <div className="rounded-md bg-blue-900/30 p-3">
                         <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6 text-blue-400"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 text-blue-400"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
                         >
-                        <path
+                            <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}
                             d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                        />
+                            />
                         </svg>
-                    </div>
-                    <div className="ml-4">
-                        <h3 className="text-sm font-medium text-gray-400">Total Comments</h3>
-                        <p className="text-2xl font-bold text-gray-100">{mockStats.totalComments}</p>
-                    </div>
+                        </div>
+                        <div className="ml-4">
+                        <h3 className="text-sm font-medium text-gray-400">Total threads</h3>
+                        <p className="text-2xl font-bold text-gray-100">{mockStats.totalthreads}</p>
+                        </div>
                     </div>
                     <div className="mt-4">
-                    <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-400">Active Users</span>
                         <span className="font-medium text-blue-300">{mockStats.activeUsers}</span>
-                    </div>
-                    <div className="mt-1 h-2 w-full rounded-full bg-gray-700">
+                        </div>
+                        <div className="mt-1 h-2 w-full rounded-full bg-gray-700">
                         <div
-                        className="h-2 rounded-full bg-blue-500"
-                        style={{ width: `${(mockStats.activeUsers / mockStats.totalUsers) * 100}%` }}
+                            className="h-2 rounded-full bg-blue-500"
+                            style={{ width: `${(mockStats.activeUsers / mockStats.totalUsers) * 100}%` }}
                         ></div>
+                        </div>
                     </div>
                     </div>
                 </div>
                 </div>
-
-                {/* Recent activity */}
-                <div className="rounded-lg bg-gray-800 p-4 sm:p-6 shadow border border-gray-700">
-                <h2 className="mb-4 text-lg font-medium text-gray-100">Recent Activity</h2>
-                <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-700">
-                    <thead className="bg-gray-700/50">
-                        <tr>
-                        <th
-                            scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400"
-                        >
-                            User
-                        </th>
-                        <th
-                            scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400"
-                        >
-                            Action
-                        </th>
-                        <th
-                            scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400"
-                        >
-                            Time
-                        </th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-700 bg-gray-800">
-                        {mockActivities.map((activity) => (
-                        <tr key={activity.id}>
-                            <td className="whitespace-nowrap px-6 py-4">
-                            <div className="text-sm font-medium text-gray-100">{activity.user}</div>
-                            </td>
-                            <td className="whitespace-nowrap px-6 py-4">
-                            <div className="text-sm text-gray-300">{activity.action}</div>
-                            </td>
-                            <td className="whitespace-nowrap px-6 py-4">
-                            <div className="text-sm text-gray-400">{activity.time}</div>
-                            </td>
-                        </tr>
-                        ))}
-                    </tbody>
-                    </table>
-                </div>
-                </div>
-
-                {/* Admin code section */}
-                <div className="rounded-lg bg-gray-800 p-4 sm:p-6 shadow border border-gray-700">
-                <h2 className="mb-4 text-lg font-medium text-gray-100">Admin Code</h2>
-                <div className="rounded-md bg-gray-900 p-4 font-mono text-sm text-gray-300">
-                    <p>// Admin access code</p>
-                    <p className="mt-2">const adminCode = "MEAL-ADMIN-2023";</p>
-                    <p className="mt-2">// Use this code to grant admin privileges to users</p>
-                    <p className="mt-2">// This code expires in 30 days</p>
-                </div>
-                <div className="mt-4">
-                    <button className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800">
-                    Generate New Code
-                    </button>
-                </div>
-                </div>
-            </div>
             )}
+
 
             {/* Recipes tab */}
             {activeTab === "recipes" && (
             <div className="space-y-6">
                 <div className="rounded-lg bg-gray-800 p-4 sm:p-6 shadow border border-gray-700">
-                <h2 className="mb-4 text-lg font-medium text-gray-100">Recipe Management</h2>
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-700">
                     <thead className="bg-gray-700/50">
@@ -933,11 +875,10 @@ return (
             </div>
             )}
 
-            {/* Comments tab */}
-            {activeTab === "comments" && (
+            {/* threads tab */}
+            {activeTab === "threads" && (
             <div className="space-y-6">
                 <div className="rounded-lg bg-gray-800 p-4 sm:p-6 shadow border border-gray-700">
-                <h2 className="mb-4 text-lg font-medium text-gray-100">Comment Management</h2>
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-700">
                     <thead className="bg-gray-700/50">
@@ -958,7 +899,7 @@ return (
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400"
                         >
-                            Comment
+                            Thread
                         </th>
                         <th
                             scope="col"
@@ -975,24 +916,24 @@ return (
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-700 bg-gray-800">
-                        {filteredComments.map((comment) => (
-                        <tr key={comment.id}>
+                        {filteredthreads.map((thread) => (
+                        <tr key={thread.id}>
                             <td className="whitespace-nowrap px-6 py-4">
-                            <div className="text-sm font-medium text-gray-100">{comment.userName}</div>
+                            <div className="text-sm font-medium text-gray-100">{thread.userName}</div>
                             </td>
                             <td className="whitespace-nowrap px-6 py-4">
-                            <div className="text-sm text-gray-300">{comment.mealName}</div>
+                            <div className="text-sm text-gray-300">{thread.mealName}</div>
                             </td>
                             <td className="px-6 py-4">
-                            <div className="text-sm text-gray-300 max-w-xs truncate">{comment.text}</div>
+                            <div className="text-sm text-gray-300 max-w-xs truncate">{thread.text}</div>
                             </td>
                             <td className="whitespace-nowrap px-6 py-4">
-                            <div className="text-sm text-gray-300">{formatDate(comment.timestamp)}</div>
+                            <div className="text-sm text-gray-300">{formatDate(thread.timestamp)}</div>
                             </td>
                             <td className="whitespace-nowrap px-6 py-4">
                             <div className="flex space-x-2">
                                 <button
-                                onClick={() => showDeleteConfirmation("comment", comment.id)}
+                                onClick={() => showDeleteConfirmation("thread", thread.id)}
                                 className="rounded-md bg-red-600 px-2 py-1 text-xs font-medium text-white hover:bg-red-700"
                                 >
                                 Delete
@@ -1015,7 +956,6 @@ return (
             {activeTab === "users" && (
             <div className="space-y-6">
                 <div className="rounded-lg bg-gray-800 p-4 sm:p-6 shadow border border-gray-700">
-                <h2 className="mb-4 text-lg font-medium text-gray-100">User Management</h2>
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-700">
                     <thead className="bg-gray-700/50">
@@ -1144,7 +1084,6 @@ return (
             {activeTab === "settings" && (
             <div className="space-y-6">
                 <div className="rounded-lg bg-gray-800 p-4 sm:p-6 shadow border border-gray-700">
-                <h2 className="mb-4 text-lg font-medium text-gray-100">System Settings</h2>
                 <form className="space-y-4">
                     <div>
                     <label htmlFor="siteName" className="block text-sm font-medium text-gray-300">
@@ -1192,13 +1131,13 @@ return (
                     </div>
                     <div className="flex items-center">
                     <input
-                        id="enableComments"
+                        id="enablethreads"
                         type="checkbox"
                         defaultChecked
                         className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-red-600 focus:ring-red-500"
                     />
-                    <label htmlFor="enableComments" className="ml-2 block text-sm text-gray-300">
-                        Enable Comments
+                    <label htmlFor="enablethreads" className="ml-2 block text-sm text-gray-300">
+                        Enable threads
                     </label>
                     </div>
                     <div className="pt-4">
