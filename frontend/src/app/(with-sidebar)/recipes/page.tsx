@@ -54,7 +54,7 @@ export default function RecipesPage() {
     const handleSubmitNewThread = async (e: React.FormEvent) => {
       e.preventDefault()
 
-      const recipeID = selectedRecipe?.id || `${Math.random().toString(36).substring(2, 10)}`
+      const recipeID = selectedRecipe.id
   
       if (!newThreadContent.trim()) {
         alert("Please fill in all required fields")
@@ -62,15 +62,15 @@ export default function RecipesPage() {
       }
 
       console.log("Posting new thread:", newThreadContent)
-      console.log("recipe id", selectedRecipe.id)
+      console.log("recipe id", recipeID)
   
       try {
         const res = await fetch("http://localhost:5003/api/comment", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            credentials: "include"
           },
+          credentials: "include",
           body: JSON.stringify({
             commentText: newThreadContent,
             recipeId: recipeID
@@ -87,7 +87,6 @@ export default function RecipesPage() {
         console.error("Error posting comment:", error)
       }
 
-      alert("Thread created successfully!")
   
       // Reset form and close it
       setNewThreadTitle("")

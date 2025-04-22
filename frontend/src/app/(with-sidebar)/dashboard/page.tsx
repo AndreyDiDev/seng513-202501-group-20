@@ -1,20 +1,16 @@
 "use client"
 
-import { useState } from "react"
+import { use, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useUser } from "@/app/context/UserContext"
 
 // Mock user data
-const mockUser = {
-  name: "Juanito Escobar",
-  email: "escobar@example.com",
-  isPremium: false,
-}
-
 export default function Dashboard() {
   const router = useRouter()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isDarkMode] = useState(true)
+  const {user} = useUser()
 
   // Logout function
   const handleLogout = () => {
@@ -225,7 +221,7 @@ export default function Dashboard() {
           {/* Content body */}
           <main className="flex-1 overflow-y-auto bg-gray-900 p-6">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-100">Welcome back, {mockUser.name}</h2>
+              <h2 className="text-2xl font-bold text-gray-100">Welcome back, {user.name}</h2>
               <p className="text-gray-400">Here's an overview of your meal planning activities</p>
             </div>
 
