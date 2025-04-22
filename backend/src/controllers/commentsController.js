@@ -5,6 +5,7 @@ export const createCommentController = async (req, res) => {
     try {
         const { commentText, recipeId} = req.body;
         const userId = req.user.id
+        console.log(userId)
         let name = ''
         const comment = await db.Comment.create({ name, commentText, userId, recipeId }, { transaction: t });
 
