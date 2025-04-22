@@ -3,8 +3,9 @@ import db from '../db/db.js';
 export const createCommentController = async (req, res) => {
     const t = await db.sequelize.transaction(); // Begin transaction
     try {
-        const { name, commentText, likeCount, userId, recipeId} = req.body;
-        const comment = await db.Comment.create({ name, commentText, likeCount, userId, recipeId }, { transaction: t });
+        const { commentText, userId, recipeId} = req.body;
+        let name = ''
+        const comment = await db.Comment.create({ name, commentText, userId, recipeId }, { transaction: t });
 
         await t.commit(); // Commit transaction
 
@@ -63,17 +64,38 @@ export const getCommentsByRecipeIdController = async (req, res) => {
 export const getAllCommentsController = async (req, res) => {
     const t = await db.sequelize.transaction(); // Begin transaction
     try {
-        const comments = await db.Comment.findAll({
-            transaction: t
-        });
-
-        await t.commit(); // Commit transaction
-
-        console.log('All comments retrieved');
-        res.status(200).json(comments);
+      const comments = await db.Comment.findAll({
+        include: [
+          {
+            model: db.Recipe,
+            attributes: ['title'],
+            include: [
+              {
+                model: db.User,
+                attributes: ['name']
+              }
+            ]
+          }
+        ],
+        transaction: t
+      });
+  
+      await t.commit(); // Commit transaction
+  
+      // Map the response to the format expected by frontend
+      const formattedComments = comments.map(comment => ({
+        id: comment.id,
+        recipeTitle: comment.Recipe?.title,
+        recipePoster: comment.Recipe?.User?.name,
+        comment: comment.commentText // assuming 'content' is the field in Comment
+      }));
+  
+      console.log('All comments retrieved');
+      res.status(200).json(formattedComments);
     } catch (err) {
-        await t.rollback(); // Roll back if something fails
-        console.error(err);
-        res.status(500).json({ error: 'Failed to retrieve comments' });
+      await t.rollback(); // Roll back if something fails
+      console.error(err);
+      res.status(500).json({ error: 'Failed to retrieve comments' });
     }
-}
+  };
+  
