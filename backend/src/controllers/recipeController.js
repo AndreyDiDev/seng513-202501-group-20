@@ -80,7 +80,7 @@ export const getRecipesByIngredients = async (req, res) => {
         const recipes = await db.Recipe.findAll({
             include: {
                 model: db.Ingredient,
-                attributes: [],
+                attributes: ['name'],
                 through: { attributes: [] }, // Don't need join table attributes
                 required: true
             },
