@@ -44,6 +44,58 @@ export default function RecipesPage() {
   const [showFilters, setShowFilters] = useState(false)
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null)
 
+  // State for new thread form
+  const [showNewThreadForm, setShowNewThreadForm] = useState(false)
+  const [newThreadTitle, setNewThreadTitle] = useState("")
+  const [newThreadCategory, setNewThreadCategory] = useState("general")
+  const [newThreadContent, setNewThreadContent] = useState("")
+
+  // Handle new thread submission
+    const handleSubmitNewThread = async (e: React.FormEvent) => {
+      e.preventDefault()
+
+      const recipeID = selectedRecipe?.id || `${Math.random().toString(36).substring(2, 10)}`
+  
+      if (!newThreadContent.trim()) {
+        alert("Please fill in all required fields")
+        return
+      }
+
+      console.log("Posting new thread:", newThreadContent)
+      console.log("recipe id", selectedRecipe.id)
+  
+      try {
+        const res = await fetch("http://localhost:5003/api/comment", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            commentText: newThreadContent,
+            recipeId: recipeID
+          })
+        })
+  
+        if (!res.ok) {
+          throw new Error("Failed to post comment")
+        }
+  
+        alert("Comment posted successfully!")
+        setNewThreadContent("")
+      } catch (error) {
+        console.error("Error posting comment:", error)
+        alert("Something went wrong.")
+      }
+
+      alert("Thread created successfully!")
+  
+      // Reset form and close it
+      setNewThreadTitle("")
+      setNewThreadCategory("general")
+      setNewThreadContent("")
+      setShowNewThreadForm(false)
+  }
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const data = params.get('data')
@@ -433,7 +485,8 @@ export default function RecipesPage() {
                         Add to Meal Plan
                       </button>
 
-                      <button className="flex items-center rounded-md bg-gray-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-600">
+                      <button onClick={() => setShowNewThreadForm(true)}
+                      className="flex items-center rounded-md bg-gray-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-600">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="h-4 w-4 mr-1"
@@ -568,6 +621,49 @@ export default function RecipesPage() {
           </main>
         </div>
       </div>
+
+      {/* New Thread Modal */}
+      {showNewThreadForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-75">
+          <div className="w-full max-w-2xl rounded-md bg-gray-800 p-6 shadow-lg">
+            <h2 className="mb-4 text-lg font-semibold text-gray-100">Create New Thread</h2>
+            <form onSubmit={handleSubmitNewThread}>
+              <div className="mb-4">
+                <label htmlFor="threadTitle" className="block text-md font-medium text-gray-300">
+                  Comment on {selectedRecipe?.title}
+                </label>
+              </div>
+              <div className="mb-4">
+                <textarea
+                  id="threadContent"
+                  value={newThreadContent}
+                  onChange={(e) => setNewThreadContent(e.target.value)}
+                  rows={6}
+                  className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                  placeholder="Enter your thread content here..."
+                  required
+                ></textarea>
+              </div>
+              <div className="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setShowNewThreadForm(false)}
+                  className="rounded-md bg-gray-700 px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-600"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500"
+                >
+                  Create Thread
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      
     </>
   )
 }
