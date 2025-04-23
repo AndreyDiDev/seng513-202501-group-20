@@ -1,4 +1,5 @@
 (Setup for non docker use - docker use is shown in the video)
+(should have Node already installed)
 1. git clone {github url}
 
 2. Split terminal, cd into the project directory
