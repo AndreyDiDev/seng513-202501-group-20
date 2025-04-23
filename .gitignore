@@ -44,7 +44,6 @@ docker-compose.dev.yml
 docker-compose.test.yml
 *.local.yml
 Dockerfile.dev
-.dockerignore
 
 # PM2 logs (if using PM2 for process management)
 .pm2/
@@ -64,3 +63,10 @@ uploads/
 
 # Optional: Turbo/Next cache (monorepo or advanced builds)
 .turbo/
+
+
+# Ignore SQLite dev DB
+mockdb.sqlite
+*.sqlite
+*.sqlite3
+backend/mockdb.sqlite

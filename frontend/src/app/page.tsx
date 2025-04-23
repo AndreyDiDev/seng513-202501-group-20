@@ -4,14 +4,14 @@ type User = {
 }
 
 export default async function Home() {
-  let engineers: User[] = [];
-  try{
-    const res = await fetch('http://localhost:5003/api/backendEngineers', {cache: "no-cache"})
-    const data = await res.json()
-    engineers = data.users;
-  } catch (error){
-    console.error(error)
-  }
+  let engineers: User[] = [{id:1, name: "John Doe"}, {id:2, name: "Jane Smith"}];
+  // try{
+  //   const res = await fetch('http://localhost:5003/api/backendEngineers', {cache: "no-cache"})
+  //   const data = await res.json()
+  //   engineers = data.users;
+  // } catch (error){
+  //   console.error(error)
+  // }
 
   return (
     <div>
