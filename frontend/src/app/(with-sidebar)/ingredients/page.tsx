@@ -14,6 +14,12 @@ const mockUser = {
   isPremium: false,
 }
 
+type Ingredient = {
+  id: number
+  name: string
+  category: string
+}
+
 type Recipe = {
   id: number
   title: string
@@ -21,7 +27,6 @@ type Recipe = {
   instructions?: string
   tags?: string[]
 }
-
 
 // Mock ingredients categories
 const ingredientCategories = [
@@ -65,9 +70,28 @@ export default function IngredientsPage() {
   const [matchingRecipes, setMatchingRecipes] = useState<typeof Recipe>([])
   const [newIngredient, setNewIngredient] = useState("")
   const [newIngredientCategory, setNewIngredientCategory] = useState("proteins")
-  const [ingredients, setIngredients] = useState(mockIngredients)
+  const [ingredients, setIngredients] = useState<Ingredient[]>([])
   const [activeCategory, setActiveCategory] = useState("all")
   const [searchTerm, setSearchTerm] = useState("")
+
+  useEffect(() => {
+    const fetchIngredients = async () => {
+      try {
+        const res = await fetch("http://localhost:5003/api/ingredient", {
+          credentials: "include",
+        })
+  
+        if (!res.ok) throw new Error("Failed to fetch ingredients")
+  
+        const data = await res.json()
+        setIngredients(data) // assuming data is an array of ingredient objects
+      } catch (err) {
+        console.error("Error fetching ingredients:", err)
+      }
+    }
+  
+    fetchIngredients()
+  }, [])
 
   // Add a new state for the selected recipe and panel visibility
   const [selectedRecipe, setSelectedRecipe] = useState<(typeof Recipe)[0] | null>(null)
@@ -146,10 +170,30 @@ export default function IngredientsPage() {
   }
 
   // Add new ingredient
-  const handleAddIngredient = (e: React.FormEvent) => {
+  const handleAddIngredient = async (e: React.FormEvent) => {
     e.preventDefault()
     if (newIngredient.trim()) {
       const newId = ingredients.length + 1
+
+      console.log("newIngerienet", newIngredient)
+
+      try {
+        const res = await fetch("http://localhost:5003/api/ingredient", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            name: newIngredient
+          }),
+        })
+    
+        const result = await res.json()
+      } catch (err) {
+        console.error("Error submitting recipe:", err)
+      }
+
       setIngredients([
         ...ingredients,
         {
