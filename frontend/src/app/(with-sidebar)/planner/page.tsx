@@ -6,12 +6,13 @@ import { useState } from "react"
 import Head from "next/head"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
 
 // Define types for meal plan structure
 type Meal = {
   id: number
-  name: string
+  title: string
   image: string
 } | null
 
@@ -39,74 +40,6 @@ const mockUser = {
   isPremium: false,
 }
 
-// Mock meal plan data
-const mockMealPlan: MealPlanType = {
-  monday: {
-    breakfast: {
-      id: 4,
-      name: "Avocado Toast with Poached Egg",
-      image: "https://source.unsplash.com/random/300x200/?avocado-toast",
-    },
-    lunch: { id: 3, name: "Vegetarian Pasta Primavera", image: "https://source.unsplash.com/random/300x200/?pasta" },
-    dinner: { id: 1, name: "Chicken Stir Fry", image: "https://source.unsplash.com/random/300x200/?stirfry" },
-  },
-  tuesday: {
-    breakfast: {
-      id: 4,
-      name: "Avocado Toast with Poached Egg",
-      image: "https://source.unsplash.com/random/300x200/?avocado-toast",
-    },
-    lunch: null,
-    dinner: { id: 2, name: "Salmon with Quinoa", image: "https://source.unsplash.com/random/300x200/?salmon" },
-  },
-  wednesday: {
-    breakfast: null,
-    lunch: { id: 5, name: "Beef Tacos", image: "https://source.unsplash.com/random/300x200/?tacos" },
-    dinner: { id: 6, name: "Mushroom Risotto", image: "https://source.unsplash.com/random/300x200/?risotto" },
-  },
-  thursday: {
-    breakfast: {
-      id: 4,
-      name: "Avocado Toast with Poached Egg",
-      image: "https://source.unsplash.com/random/300x200/?avocado-toast",
-    },
-    lunch: { id: 3, name: "Vegetarian Pasta Primavera", image: "https://source.unsplash.com/random/300x200/?pasta" },
-    dinner: null,
-  },
-  friday: {
-    breakfast: null,
-    lunch: null,
-    dinner: { id: 1, name: "Chicken Stir Fry", image: "https://source.unsplash.com/random/300x200/?stirfry" },
-  },
-  saturday: {
-    breakfast: {
-      id: 4,
-      name: "Avocado Toast with Poached Egg",
-      image: "https://source.unsplash.com/random/300x200/?avocado-toast",
-    },
-    lunch: { id: 5, name: "Beef Tacos", image: "https://source.unsplash.com/random/300x200/?tacos" },
-    dinner: { id: 2, name: "Salmon with Quinoa", image: "https://source.unsplash.com/random/300x200/?salmon" },
-  },
-  sunday: {
-    breakfast: null,
-    lunch: { id: 6, name: "Mushroom Risotto", image: "https://source.unsplash.com/random/300x200/?risotto" },
-    dinner: { id: 3, name: "Vegetarian Pasta Primavera", image: "https://source.unsplash.com/random/300x200/?pasta" },
-  },
-}
-
-// Mock recipes for selection
-const mockRecipes = [
-  { id: 1, name: "Chicken Stir Fry", image: "https://source.unsplash.com/random/300x200/?stirfry" },
-  { id: 2, name: "Salmon with Quinoa", image: "https://source.unsplash.com/random/300x200/?salmon" },
-  { id: 3, name: "Vegetarian Pasta Primavera", image: "https://source.unsplash.com/random/300x200/?pasta" },
-  { id: 4, name: "Avocado Toast with Poached Egg", image: "https://source.unsplash.com/random/300x200/?avocado-toast" },
-  { id: 5, name: "Beef Tacos", image: "https://source.unsplash.com/random/300x200/?tacos" },
-  { id: 6, name: "Mushroom Risotto", image: "https://source.unsplash.com/random/300x200/?risotto" },
-  { id: 7, name: "Greek Salad", image: "https://source.unsplash.com/random/300x200/?greek-salad" },
-  { id: 8, name: "Spaghetti Carbonara", image: "https://source.unsplash.com/random/300x200/?carbonara" },
-  { id: 9, name: "Vegetable Curry", image: "https://source.unsplash.com/random/300x200/?curry" },
-]
-
 // Shopping list items
 const mockShoppingList = [
   { id: 1, name: "Chicken Breast", category: "Proteins", checked: false },
@@ -124,13 +57,46 @@ const mockShoppingList = [
 export default function PlannerPage() {
   const router = useRouter()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [mealPlan, setMealPlan] = useState<MealPlanType>(mockMealPlan)
+  const [mealPlan, setMealPlan] = useState<MealPlanType>([])
   const [shoppingList, setShoppingList] = useState(mockShoppingList)
   const [activeDay, setActiveDay] = useState("monday")
   const [activeMeal, setActiveMeal] = useState<string | null>(null)
   const [showRecipeSelector, setShowRecipeSelector] = useState(false)
   const [newItem, setNewItem] = useState("")
   const [newItemCategory, setNewItemCategory] = useState("Vegetables")
+  const [recipes, setRecipes] = useState<Recipe[]>([])
+
+  useEffect(() => {
+      const fetchRecipes = async () => {
+        try {
+          const res = await fetch("http://localhost:5003/api/recipe/all", {
+            method: "GET",
+            credentials: "include",
+          });
+          if (!res.ok) {
+            throw new Error("Failed to fetch recipes");
+          }
+          const data = await res.json();
+  
+          console.log("recipes: ", data)
+    
+          // Map Ingredients array of objects to string[]
+          const parsedData = data.map((recipe: any) => ({
+            ...recipe,
+            Ingredients: recipe.Ingredients.map((ing: { title: string }) => ing.title),
+          }));
+  
+          console.log("parsed recipes: ", parsedData)
+    
+          setRecipes(parsedData);
+        } catch (err) {
+          console.error("Error loading recipes:", err);
+        }
+      };
+    
+      fetchRecipes();
+    }, []);
+    
 
   // Days of the week
   const days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
@@ -151,7 +117,7 @@ export default function PlannerPage() {
   const handleAssignRecipe = (recipeId: number) => {
     if (!activeDay || !activeMeal) return
 
-    const recipe = mockRecipes.find((r) => r.id === recipeId)
+    const recipe = recipes.find((r) => r.id === recipeId)
     if (!recipe) return
 
     setMealPlan({
@@ -165,8 +131,6 @@ export default function PlannerPage() {
     setShowRecipeSelector(false)
     setActiveMeal(null)
   }
-
-  // Update the handleRemoveMeal function to use proper typing
 
   // Handle meal removal
   const handleRemoveMeal = (day: string, meal: string) => {
@@ -292,7 +256,7 @@ export default function PlannerPage() {
                         <div className="flex items-center justify-between rounded-md bg-gray-700 p-3">
                           <div className="flex items-center">
                             <span className="text-sm text-gray-100">
-                              {mealPlan[day as keyof typeof mealPlan]?.[meal]?.name}
+                              {mealPlan[day as keyof typeof mealPlan]?.[meal]?.title}
                             </span>
                           </div>
                           <button
@@ -417,13 +381,13 @@ export default function PlannerPage() {
           <div className="rounded-md bg-gray-800 p-6 shadow-lg">
             <h2 className="mb-4 text-lg font-semibold text-gray-100">Select a Recipe</h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-              {mockRecipes.map((recipe) => (
+              {recipes.map((recipe) => (
                 <button
                   key={recipe.id}
                   onClick={() => handleAssignRecipe(recipe.id)}
                   className="flex flex-col items-center rounded-md bg-gray-700 p-3 hover:bg-gray-600"
                 >
-                  <span className="text-sm text-gray-100">{recipe.name}</span>
+                  <span className="text-sm text-gray-100">{recipe.title}</span>
                 </button>
               ))}
             </div>

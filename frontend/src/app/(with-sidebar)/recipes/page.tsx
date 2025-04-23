@@ -13,7 +13,7 @@ interface Recipe {
   Ingredients: string[]
   tags: string[]
   rating?: number
-  prepTime?: string
+  time?: string
   calories?: number
   isFavorite?: boolean
 }
@@ -124,12 +124,16 @@ export default function RecipesPage() {
           throw new Error("Failed to fetch recipes");
         }
         const data = await res.json();
+
+        console.log("recipes: ", data)
   
         // Map Ingredients array of objects to string[]
         const parsedData = data.map((recipe: any) => ({
           ...recipe,
           Ingredients: recipe.Ingredients.map((ing: { name: string }) => ing.name),
         }));
+
+        console.log("parsed recipes: ", parsedData)
   
         setRecipes(parsedData);
       } catch (err) {
@@ -161,8 +165,8 @@ export default function RecipesPage() {
     if (sortBy === "rating") {
       return (b.rating ?? 0) - (a.rating ?? 0)
     } else if (sortBy === "time") {
-      const aTime = parseInt(a.prepTime || "0")
-      const bTime = parseInt(b.prepTime || "0")
+      const aTime = parseInt(a.time || "0")
+      const bTime = parseInt(b.time || "0")
       return aTime - bTime
     } else {
       return (b.id ?? 0) - (a.id ?? 0)
@@ -268,19 +272,19 @@ export default function RecipesPage() {
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
+                  className="w-5 h-5"
                   fill="none"
+                  viewBox="0 0 24 24"
                   stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-4 w-4"
+                  strokeWidth={2}
                 >
-                  <polygon points="22 3 2 11 11 13 22 21 22 3"></polygon>
-                  <line x1="22" y1="3" x2="11" y2="13"></line>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L15 13.414V19a1 1 0 01-1.447.894l-4-2A1 1 0 019 17v-3.586L3.293 6.707A1 1 0 013 6V4z"
+                  />
                 </svg>
+
               </button>
             </div>
           </header>
@@ -443,7 +447,7 @@ export default function RecipesPage() {
                         <circle cx="12" cy="12" r="10"></circle>
                         <polyline points="12 6 12 12 16 14"></polyline>
                       </svg>
-                      <span>{selectedRecipe.prepTime}</span>
+                      <span>{selectedRecipe.time}</span>
                       <span className="mx-2">•</span>
                       <span>{selectedRecipe.calories} cal</span>
                     </div>
@@ -563,7 +567,7 @@ export default function RecipesPage() {
                         <circle cx="12" cy="12" r="10"></circle>
                         <polyline points="12 6 12 12 16 14"></polyline>
                       </svg>
-                      <span>{recipe.prepTime}</span>
+                      <span>{recipe.time}</span>
                       <span className="mx-2">•</span>
                       <span>{recipe.calories} cal</span>
                     </div>

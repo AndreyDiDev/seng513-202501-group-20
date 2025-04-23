@@ -64,7 +64,7 @@ export default function RecipeSubmissionPage() {
     description: "",
     category: "Dinner",
     cuisine: "American",
-    prepTime: "",
+    calories: "",
     cookTime: "",
     servings: "",
     difficulty: "Medium",
@@ -167,8 +167,8 @@ export default function RecipeSubmissionPage() {
         credentials: "include", // Important for sending session cookie
         body: JSON.stringify({
           title: recipeForm.title || "Untitled Recipe",
-          time: recipeForm.prepTime && recipeForm.cookTime
-            ? `${recipeForm.prepTime} + ${recipeForm.cookTime} minutes`
+          time: recipeForm.cookTime
+            ? `${recipeForm.cookTime} minutes`
             : "0 minutes",
           calories: recipeForm.calories ?? 0,
           instructions: Array.isArray(recipeForm.instructions) && recipeForm.instructions.length > 0
@@ -195,7 +195,7 @@ export default function RecipeSubmissionPage() {
           description: "",
           category: "Dinner",
           cuisine: "American",
-          prepTime: "",
+          calories: "",
           cookTime: "",
           servings: "",
           difficulty: "Medium",
@@ -438,14 +438,14 @@ export default function RecipeSubmissionPage() {
                     </select>
                   </div>
                   <div>
-                    <label htmlFor="prepTime" className="block text-sm font-medium text-gray-300">
-                      Preparation Time (minutes)
+                    <label htmlFor="calroies" className="block text-sm font-medium text-gray-300">
+                      Calories
                     </label>
                     <input
                       type="number"
-                      id="prepTime"
-                      name="prepTime"
-                      value={recipeForm.prepTime}
+                      id="calories"
+                      name="calories"
+                      value={recipeForm.calories}
                       onChange={handleInputChange}
                       min="0"
                       className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-gray-100 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
