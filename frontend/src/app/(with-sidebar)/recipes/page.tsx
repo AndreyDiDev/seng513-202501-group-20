@@ -392,7 +392,9 @@ export default function RecipesPage() {
 
                   <div>
                     <h3 className="text-md font-medium text-gray-200 mb-2">Instructions</h3>
-                    <p className="text-gray-300 whitespace-pre-line">{selectedRecipe.instructions}</p>
+                    <p className="text-gray-300 whitespace-pre-line">
+                      {filteredRecipes.find(r => r.title === selectedRecipe.title)?.instructions || selectedRecipe.instructions}
+                    </p>
 
                     <div className="mt-4 flex items-center text-sm text-gray-400">
                       <svg
@@ -410,9 +412,9 @@ export default function RecipesPage() {
                         <circle cx="12" cy="12" r="10"></circle>
                         <polyline points="12 6 12 12 16 14"></polyline>
                       </svg>
-                      <span>{selectedRecipe.time}</span>
+                      <span>{filteredRecipes.find(r => r.title === selectedRecipe.title)?.time || selectedRecipe.time}</span>
                       <span className="mx-2">•</span>
-                      <span>{selectedRecipe.calories} cal</span>
+                      <span>{filteredRecipes.find(r => r.title === selectedRecipe.title)?.calories || selectedRecipe.calories} cal</span>
                     </div>
 
                     <div className="mt-4">
