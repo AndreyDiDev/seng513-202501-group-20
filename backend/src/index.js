@@ -12,6 +12,7 @@ import healthRouter from './routes/healthCheck.mjs'
 import adminRouter from './routes/admin.mjs'
 import commentRouter from './routes/comment.mjs'
 import meRouter from './routes/me.mjs'
+import ingredientRouter from './routes/ingredient.mjs'
 
 
 const app = express();
@@ -46,6 +47,7 @@ app.use(recipeRouter)
 app.use(adminRouter)
 app.use(commentRouter)
 app.use(meRouter)
+app.use(ingredientRouter)
 
 
 app.listen(PORT, ()=>{
