@@ -185,42 +185,6 @@ export default function IngredientsPage() {
       </Head>
 
       <div className="flex h-screen bg-gray-900">
-        {/* Mobile menu button */}
-        <div className="fixed top-0 left-0 z-40 flex h-16 w-full items-center bg-gray-800 px-4 shadow-md lg:hidden">
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="rounded-md p-2 text-gray-300 hover:bg-gray-700"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-          <div className="ml-4 flex items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-6 w-6 text-emerald-400"
-            >
-              <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z" />
-              <line x1="6" x2="18" y1="17" y2="17" />
-            </svg>
-            <span className="ml-2 text-lg font-bold text-gray-100">Meal Planner</span>
-          </div>
-        </div>
-
         {/* Main content */}
         <div className="flex flex-1 flex-col overflow-hidden pt-16 lg:pt-0">
           {/* Content header */}

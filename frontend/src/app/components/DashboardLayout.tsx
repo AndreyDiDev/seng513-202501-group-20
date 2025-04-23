@@ -1,16 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
-import { useRouter , usePathname} from "next/navigation"
 import { useUser } from "../context/UserContext"
-import { useEffect } from "react"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
-
   const { user, isLoading } = useUser()
 
   const isPremium = user?.role === "premium"
@@ -18,6 +16,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const handleLogout = () => {
     router.push("/login")
   }
+
+  useEffect(() => {
+    const closeSidebar = () => setIsMobileMenuOpen(false)
+    window.addEventListener("close-sidebar", closeSidebar)
+    return () => window.removeEventListener("close-sidebar", closeSidebar)
+  }, [])
 
   if (isLoading) return <div className="text-white p-4">Loading...</div>
 
@@ -76,13 +80,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {/* Navigation */}
           <nav className="flex-1 overflow-y-auto px-4 py-4">
             <ul className="space-y-2">
-            <SidebarLink href="/dashboard" label="Dashboard" icon="home" active={pathname === "/dashboard"} />
-            <SidebarLink href="/ingredients" label="Ingredients" icon="bowl" active={pathname === "/ingredients"} />
-            <SidebarLink href="/recipes" label="Recipes" icon="book" active={pathname === "/recipes"} />
-            <SidebarLink href="/planner" label="Meal Planner" icon="calendar" active={pathname === "/planner"} />
-            <SidebarLink href="/submit" label="Submit Recipe" icon="plus" active={pathname === "/submit"} />
-            <SidebarLink href="/forum" label="Recipe Forum" icon="chat" active={pathname === "/forum"} />
-            <SidebarLink href="/account" label="Account" icon="user" active={pathname === "/account"} />
+              <SidebarLink href="/dashboard" label="Dashboard" icon="home" active={pathname === "/dashboard"} />
+              <SidebarLink href="/ingredients" label="Ingredients" icon="bowl" active={pathname === "/ingredients"} />
+              <SidebarLink href="/recipes" label="Recipes" icon="book" active={pathname === "/recipes"} />
+              <SidebarLink href="/planner" label="Meal Planner" icon="calendar" active={pathname === "/planner"} />
+              <SidebarLink href="/submit" label="Submit Recipe" icon="plus" active={pathname === "/submit"} />
+              <SidebarLink href="/forum" label="Recipe Forum" icon="chat" active={pathname === "/forum"} />
+              <SidebarLink href="/account" label="Account" icon="user" active={pathname === "/account"} />
             </ul>
           </nav>
 
@@ -119,10 +123,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Mobile Header */}
         <div className="lg:hidden fixed top-0 left-0 right-0 z-30 flex h-16 items-center bg-gray-800 px-4 shadow-md">
           <button
-            onClick={() => {
-              setIsMobileMenuOpen(!isMobileMenuOpen);
-            }}
-            
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="rounded-md p-2 text-gray-300 hover:bg-gray-700"
           >
             <svg
@@ -147,8 +148,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   )
 }
 
-// SidebarLink helper component
+// SidebarLink component
 function SidebarLink({ href, label, icon, active = false }) {
+  const router = useRouter()
+
+  const handleClick = (e) => {
+    e.preventDefault()
+    router.push(href)
+
+    // Trigger sidebar close if on mobile
+    if (window.innerWidth < 1024) {
+      window.dispatchEvent(new Event("close-sidebar"))
+    }
+  }
+
   const iconPaths = {
     home: (
       <path
@@ -195,8 +208,9 @@ function SidebarLink({ href, label, icon, active = false }) {
 
   return (
     <li>
-      <Link
+      <a
         href={href}
+        onClick={handleClick}
         className={`flex items-center rounded-md px-4 py-2 text-sm font-medium ${
           active ? "bg-emerald-600 text-white" : "text-gray-300 hover:bg-gray-700"
         }`}
@@ -211,7 +225,7 @@ function SidebarLink({ href, label, icon, active = false }) {
           {iconPaths[icon]}
         </svg>
         {label}
-      </Link>
+      </a>
     </li>
   )
 }
