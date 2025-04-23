@@ -159,65 +159,66 @@ export default function ForumPage () {
 
             {/* Thread list */}
             <div className="h-[calc(100vh-16rem)] overflow-y-auto pr-2">
-  <div className="space-y-4">
-    {filteredThreads.map((thread) => (
-      <div
-        key={thread.id}
-        onClick={() => viewRecipeDetails(thread)}
-        role="button"
-        tabIndex={0}
-        className="rounded-lg bg-gray-800 p-4 shadow-md hover:bg-gray-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-400"
-      >
-        <div className="flex items-start justify-between">
-          <div className="flex items-start space-x-3">
-            <div>
-              <p className="text-lg font-semibold text-gray-100">
-                {thread.recipeTitle}
-              </p>
-              <div className="mt-1 flex items-center space-x-2 text-xs text-gray-400">
-                <span>By {thread.recipePoster}</span>
-              </div>
-            </div>
+              {filteredThreads.length > 0 ? (
+                <div className="space-y-4">
+                  {filteredThreads.map((thread) => (
+                    <div
+                      key={thread.id}
+                      onClick={() => viewRecipeDetails(thread)}
+                      role="button"
+                      tabIndex={0}
+                      className="rounded-lg bg-gray-800 p-4 shadow-md hover:bg-gray-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start space-x-3">
+                          <div>
+                            <p className="text-lg font-semibold text-gray-100">
+                              {thread.recipeTitle}
+                            </p>
+                            <div className="mt-1 flex items-center space-x-2 text-xs text-gray-400">
+                              <span>By {thread.recipePoster}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <p className="mt-3 text-sm text-gray-300">{thread.comment}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex h-full flex-col items-center justify-center rounded-lg bg-gray-800 p-12 text-center shadow-lg">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-12 w-12 text-gray-500"
+                  >
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                  <h3 className="mt-4 text-lg font-medium text-gray-100">No threads found</h3>
+                  <p className="mt-2 text-sm text-gray-400">
+                    Try adjusting your search or filters to find what you're looking for.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setSearchTerm("")
+                      setActiveCategory("all")
+                    }}
+                    className="mt-6 rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500"
+                  >
+                    Clear Filters
+                  </button>
+                </div>
+              )}
+
+
           </div>
-        </div>
-        <p className="mt-3 text-sm text-gray-300">{thread.comment}</p>
-      </div>
-    ))}
-  </div>
-</div>
-
-
-            {filteredThreads.length === 0 && (
-              <div className="flex flex-col items-center justify-center rounded-lg bg-gray-800 p-12 text-center shadow-lg">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-12 w-12 text-gray-500"
-                >
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                </svg>
-                <h3 className="mt-4 text-lg font-medium text-gray-100">No threads found</h3>
-                <p className="mt-2 text-sm text-gray-400">
-                  Try adjusting your search or filters to find what you're looking for.
-                </p>
-                <button
-                  onClick={() => {
-                    setSearchTerm("")
-                    setActiveCategory("all")
-                  }}
-                  className="mt-6 rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500"
-                >
-                  Clear Filters
-                </button>
-              </div>
-            )}
           </div>
         </div>
     </>
